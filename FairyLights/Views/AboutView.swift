@@ -9,12 +9,12 @@ struct AboutView: View {
                 .frame(width: 100, height: 100)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .shadow(radius: 5)
-
+            
             Text("Fairy Lights")
                 .font(.largeTitle)
                 .bold()
                 .padding(.top, 10)
-
+            
             VStack(spacing: 5) {
                 Text("Version \(Bundle.main.appVersion)")
                     .font(.subheadline)
@@ -23,7 +23,7 @@ struct AboutView: View {
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
-
+            
             // Buttons
             HStack(spacing: 20) {
                 AboutButton(
@@ -38,17 +38,11 @@ struct AboutView: View {
                 )
             }
             .padding(.top, 10)
-
+            
             Spacer()
         }
         .padding(30)
-        .frame(width: 320, height: 320)
-        .onAppear {
-            if let window = NSApp.windows.first(where: { $0.title == "About Fairy Lights" }) {
-                window.styleMask.remove(.miniaturizable)
-                window.canHide = false
-            }
-        }
+        .frame(width: 400, height: 320)
     }
 }
 
@@ -57,7 +51,7 @@ struct AboutButton: View {
     let systemImage: String
     let url: String
     @State private var isHovered: Bool = false
-
+    
     var body: some View {
         Link(destination: URL(string: url)!) {
             HStack {

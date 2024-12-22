@@ -6,25 +6,15 @@ struct SettingsView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            SettingsHeader
             SettingsForm
         }
         .padding()
-        .frame(width: 400, height: 250)
-        .onAppear(perform: adjustWindowAppearance)
-    }
-    
-    // MARK: - Header
-    private var SettingsHeader: some View {
-        Text("Fairy Lights Settings")
-            .font(.system(size: 20, weight: .semibold, design: .default))
-            .padding(.bottom, 10)
+        .frame(width: 400, height: 150)
     }
     
     // MARK: - Settings Form
     private var SettingsForm: some View {
         Form {
-            // Update settings section
             updateSection
         }
         .formStyle(.grouped)
@@ -33,39 +23,17 @@ struct SettingsView: View {
     // MARK: - Update Section
     private var updateSection: some View {
         Section {
-            Toggle("Check for Updates Automatically", isOn: $appState.checkForUpdatesAutomatically)
+            HStack {
+                Image(systemName: "arrow.clockwise.square.fill")
+                    .foregroundColor(.secondary)
+                    .font(.title2)
+                Toggle("Check for Updates Automatically", isOn: $appState.checkForUpdatesAutomatically)
+            }
             
             if appState.checkForUpdatesAutomatically {
                 Text("Updates will be checked once a day.")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-            }
-            
-            HStack {
-                Spacer()
-                Button(action: {
-                    checkForUpdates()
-                }) {
-                    if appState.isCheckingForUpdates {
-                        HStack(spacing: 5) {
-                            ProgressView()
-                                .scaleEffect(0.8)
-                            Text("Checking...")
-                                .font(.system(size: 13, weight: .regular))
-                                .foregroundColor(.secondary)
-                        }
-                    } else {
-                        HStack(spacing: 5) {
-                            Image(systemName: "arrow.clockwise")
-                                .font(.system(size: 13, weight: .regular))
-                            Text("Check for Updates")
-                                .font(.system(size: 13, weight: .regular))
-                        }
-                    }
-                }
-                .buttonStyle(.borderless)
-                .disabled(appState.isCheckingForUpdates)
-                Spacer()
             }
         }
     }
