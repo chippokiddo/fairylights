@@ -8,6 +8,7 @@ struct FairyLightsApp: App {
     @StateObject private var appState = AppState()
     
     @State private var isCheckingForUpdates = false
+    private static var preferencesWindow: SettingsWindowController?
     
     var body: some Scene {
         MenuBarExtra {
@@ -24,7 +25,7 @@ struct FairyLightsApp: App {
                 .disabled(isCheckingForUpdates)
                 
                 Button("Preferences...") {
-                    showSettingsWindow()
+                    FairyLightsApp.showSettingsWindow(appState: appState, checkForUpdates: checkForAppUpdates)
                 }
                 .keyboardShortcut(",", modifiers: [.command])
                 
@@ -79,60 +80,60 @@ struct FairyLightsApp: App {
     }
     
     // MARK: - Preferences Window
-    private func showSettingsWindow() {
-        let settingsView = SettingsView(checkForUpdates: {
-            checkForAppUpdates()
-        }).environmentObject(appState)
-        
-        let aboutView = AboutView()
-        
-        let preferencesWindow = SettingsWindowController(
-            panes: [
-                Settings.Pane(
-                    identifier: Settings.PaneIdentifier("general"),
-                    title: "General",
-                    toolbarIcon: {
-                        let originalImage = NSImage(named: "squareGear")!
-                        let paddedSize = NSSize(width: 24, height: 24)
-                        let innerSize = NSSize(width: 18, height: 18)
-
-                        let paddedImage = NSImage(size: paddedSize)
-                        paddedImage.lockFocus()
-                        
-                        // Center the original image inside the padding
-                        let xOffset = (paddedSize.width - innerSize.width) / 2
-                        let yOffset = (paddedSize.height - innerSize.height) / 2
-                        originalImage.draw(
-                            in: NSRect(x: xOffset, y: yOffset, width: innerSize.width, height: innerSize.height),
-                            from: .zero,
-                            operation: .sourceOver,
-                            fraction: 1.0
-                        )
-                        
-                        paddedImage.unlockFocus()
-                        paddedImage.isTemplate = true
-                        return paddedImage
-                    }()
-                ) {
-                    settingsView
-                },
-                Settings.Pane(
-                    identifier: Settings.PaneIdentifier("about"),
-                    title: "About",
-                    toolbarIcon: {
-                        let config = NSImage.SymbolConfiguration(pointSize: 24, weight: .regular)
-                        return NSImage(
-                            systemSymbolName: "info.square.fill",
-                            accessibilityDescription: nil
-                        )!.withSymbolConfiguration(config)!
-                    }()
-                ) {
-                    aboutView
-                }
-            ]
-        )
-        
-        preferencesWindow.show()
+    static func showSettingsWindow(appState: AppState, checkForUpdates: @escaping () -> Void) {
+        if preferencesWindow == nil {
+            let settingsView = SettingsView(checkForUpdates: {
+                checkForUpdates()
+            }).environmentObject(appState)
+            
+            let aboutView = AboutView()
+            
+            preferencesWindow = SettingsWindowController(
+                panes: [
+                    Settings.Pane(
+                        identifier: Settings.PaneIdentifier("general"),
+                        title: "General",
+                        toolbarIcon: {
+                            let originalImage = NSImage(named: "squareGear")!
+                            let paddedSize = NSSize(width: 24, height: 24)
+                            let innerSize = NSSize(width: 18, height: 18)
+                            
+                            let paddedImage = NSImage(size: paddedSize)
+                            paddedImage.lockFocus()
+                            
+                            let xOffset = (paddedSize.width - innerSize.width) / 2
+                            let yOffset = (paddedSize.height - innerSize.height) / 2
+                            originalImage.draw(
+                                in: NSRect(x: xOffset, y: yOffset, width: innerSize.width, height: innerSize.height),
+                                from: .zero,
+                                operation: .sourceOver,
+                                fraction: 1.0
+                            )
+                            
+                            paddedImage.unlockFocus()
+                            paddedImage.isTemplate = true
+                            return paddedImage
+                        }()
+                    ) {
+                        settingsView
+                    },
+                    Settings.Pane(
+                        identifier: Settings.PaneIdentifier("about"),
+                        title: "About",
+                        toolbarIcon: {
+                            let config = NSImage.SymbolConfiguration(pointSize: 24, weight: .regular)
+                            return NSImage(
+                                systemSymbolName: "info.square.fill",
+                                accessibilityDescription: nil
+                            )!.withSymbolConfiguration(config)!
+                        }()
+                    ) {
+                        aboutView
+                    }
+                ]
+            )
+        }
+        preferencesWindow?.show()
     }
     
     // MARK: - Alert Handling
