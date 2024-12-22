@@ -18,6 +18,10 @@ Designed and developed in Swift.
 
 ![Screenshot](./assets/img01.gif)
 
+## Dependencies
+
+- [Settings](https://github.com/sindresorhus/Settings)
+
 ## Features
 
 - Lives in the macOS menu bar
