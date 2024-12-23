@@ -20,9 +20,9 @@ struct FairyLightsApp: App {
                 Divider()
                 
                 Button(action: { checkForAppUpdates() }) {
-                    Text(isCheckingForUpdates ? "Checking..." : "Check for Updates")
+                    Text(appState.isCheckingForUpdates ? "Checking..." : "Check for Updates")
                 }
-                .disabled(isCheckingForUpdates)
+                .disabled(appState.isCheckingForUpdates)
                 
                 Button("Preferences...") {
                     FairyLightsApp.showSettingsWindow(appState: appState, checkForUpdates: checkForAppUpdates)
@@ -33,6 +33,9 @@ struct FairyLightsApp: App {
                 
                 Button("Quit") { NSApplication.shared.terminate(nil) }
                     .keyboardShortcut("Q", modifiers: [.command])
+            }
+            .onAppear {
+                appState.scheduleNextUpdateCheck(checkForUpdates: checkForAppUpdates)
             }
         } label: {
             Image(nsImage: menuBarIcon(for: lightsController.isLightsOn))
