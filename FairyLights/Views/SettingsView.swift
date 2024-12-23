@@ -23,8 +23,12 @@ struct SettingsView: View {
     // MARK: - Update Section
     private var updateSection: some View {
         Section {
-            // Toggle for automatic updates
-            Toggle("Check for Updates Automatically", isOn: $appState.checkForUpdatesAutomatically)
+            HStack {
+                Image(systemName: "arrow.clockwise.square.fill")
+                    .foregroundColor(.secondary)
+                    .font(.title2)
+                Toggle("Check for Updates Automatically", isOn: $appState.checkForUpdatesAutomatically)
+            }
             
             if appState.checkForUpdatesAutomatically {
                 Text("Updates will be checked once a day.")
