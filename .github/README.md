@@ -9,14 +9,9 @@
 [![License](https://img.shields.io/github/license/chippokiddo/FairyLights)](../LICENSE)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?&logo=buy-me-a-coffee&logoColor=0D0C22)](https://buymeacoffee.com/chippo)
 
-Fairy Lights is exactly what it sounds like: fairy lights that float beneath your macOS menu bar. A simple, decorative addition for your desktop, perfect for the holiday season.
+Fairy Lights is a simple, decorative app for macOS built in Swift that float beneath the menu bar.
 
-Designed and developed in Swift.
-
-> [!NOTE]
-> All assets were hand-drawn and are not included in this project
-
-![Screenshot](./assets/img01.gif)
+![Demo](./assets/img01.gif)
 
 ## Dependencies
 
@@ -25,20 +20,23 @@ Designed and developed in Swift.
 ## Features
 
 - Lives in the macOS menu bar
-- Subtle, twinkling fairy lights that replicate real decorative lights
+- Subtle, twinkling fairy lights
 
 ## Install
-
 - Download the `FairyLights.zip` file from the [latest release](https://github.com/chippokiddo/FairyLights/releases/latest)
 - Unzip the file and move `Fairy Lights.app` into your `Applications` folder
 - Control-click or right-click the app and select 'open'
 
 > [!NOTE]
-> Since Fairy Lights is not notarized, macOS Gatekeeper may block the app:
+> macOS Gatekeeper may block the app since Fairy Lights is not notarized:
 >
 > - Go to System Settings > Privacy & Security
 > - Scroll down and locate the prompt for `Fairy Lights.app`
 > - Click 'open anyway'
+>
+> Due to how the app works, this app is not, and cannot be sandboxed.
+> 
+> All assets were hand-drawn and are not included in this project.
 
 ## Contribute
 
