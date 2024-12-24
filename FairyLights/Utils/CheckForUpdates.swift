@@ -21,7 +21,7 @@ struct GitHubRelease: Decodable {
 
 // Async function to fetch the latest release information from GitHub
 func fetchLatestRelease() async throws -> (String, URL) {
-    let url = URL(string: "https://api.github.com/repos/chippokiddo/FairyLights/releases/latest")!
+    let url = URL(string: "https://api.github.com/repos/chippokiddo/fairylights/releases/latest")!
     var request = URLRequest(url: url)
     request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
     request.timeoutInterval = 15

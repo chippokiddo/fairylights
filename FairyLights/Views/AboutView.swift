@@ -29,7 +29,7 @@ struct AboutView: View {
                 AboutButton(
                     title: "GitHub",
                     systemImage: "link",
-                    url: "https://github.com/chippokiddo/FairyLights"
+                    url: "https://github.com/chippokiddo/fairylights"
                 )
                 AboutButton(
                     title: "Support",

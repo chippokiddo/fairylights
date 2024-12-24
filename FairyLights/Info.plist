@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>URLSession</key>
-	<string>https://api.github.com/repos/chippokiddo/FairyLights/releases/latest</string>
+	<string>https://api.github.com/repos/chippokiddo/fairylights/releases/latest</string>
 </dict>
 </plist>
