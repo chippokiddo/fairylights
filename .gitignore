@@ -1,0 +1,22 @@
+# Ignore macOS system files
+.DS_Store
+
+# Ignore the entire Assets.xcassets folder
+Assets.xcassets/
+
+# Ignore build products and output
+build/
+
+# Ignore Xcode configuration files
+Config.xcconfig
+
+# Ignore DerivedData directory (Xcode build artifacts)
+DerivedData/
+
+# Ignore Xcode project
+Fairy Lights.xcodeproj
+
+# Ignore symbolic links
+github-visible
+gitignore-visible
+

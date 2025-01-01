@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import Settings
+import enum Settings.Settings
 
 @main
 struct FairyLightsApp: App {
@@ -8,7 +9,8 @@ struct FairyLightsApp: App {
     @StateObject private var appState = AppState()
     
     @State private var isCheckingForUpdates = false
-    private static var preferencesWindow: SettingsWindowController?
+    
+    private static var preferencesWindow: SettingsWindowController? = nil
     
     var body: some Scene {
         MenuBarExtra {
@@ -43,7 +45,61 @@ struct FairyLightsApp: App {
         }
     }
     
-    // MARK: - Update Check
+    private func menuBarIcon(for state: Bool) -> NSImage {
+        let assetName = state ? "IconOn" : "IconOff"
+        let image = NSImage(named: assetName) ?? NSImage()
+        let ratio = image.size.height / image.size.width
+        image.size.height = 16
+        image.size.width = 16 / ratio
+        return image
+    }
+    
+    // MARK: Preferences Window
+    static func showSettingsWindow(appState: AppState, checkForUpdates: @escaping () -> Void) {
+        if preferencesWindow == nil {
+            let settingsView = SettingsView(checkForUpdates: {
+                checkForUpdates()
+            }).environmentObject(appState)
+            
+            let aboutView = AboutView().environmentObject(appState)
+            
+            preferencesWindow = SettingsWindowController(
+                panes: [
+                    Settings.Pane(
+                        identifier: Settings.PaneIdentifier("general"),
+                        title: "General",
+                        toolbarIcon: { gearToolbarIcon() }()
+                    ) {
+                        settingsView
+                    },
+                    Settings.Pane(
+                        identifier: Settings.PaneIdentifier("about"),
+                        title: "About",
+                        toolbarIcon: { infoToolbarIcon() }()
+                    ) {
+                        aboutView
+                    }
+                ]
+            )
+        }
+        preferencesWindow?.show()
+    }
+    
+    // MARK: Alert Handling
+    private func showAlert(
+        title: String, message: String, style: NSAlert.Style, buttons: [String] = ["OK"],
+        completion: ((NSApplication.ModalResponse) -> Void)? = nil
+    ) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.alertStyle = style
+        buttons.forEach { alert.addButton(withTitle: $0) }
+        let response = alert.runModal()
+        completion?(response)
+    }
+    
+    // MARK: Update Check
     private func checkForAppUpdates() {
         guard !isCheckingForUpdates else { return }
         isCheckingForUpdates = true
@@ -82,87 +138,6 @@ struct FairyLightsApp: App {
         }
     }
     
-    // MARK: - Preferences Window
-    static func showSettingsWindow(appState: AppState, checkForUpdates: @escaping () -> Void) {
-        if preferencesWindow == nil {
-            let settingsView = SettingsView(checkForUpdates: {
-                checkForUpdates()
-            }).environmentObject(appState)
-            
-            let aboutView = AboutView()
-            
-            preferencesWindow = SettingsWindowController(
-                panes: [
-                    Settings.Pane(
-                        identifier: Settings.PaneIdentifier("general"),
-                        title: "General",
-                        toolbarIcon: {
-                            let originalImage = NSImage(named: "squareGear")!
-                            let paddedSize = NSSize(width: 24, height: 24)
-                            let innerSize = NSSize(width: 18, height: 18)
-                            
-                            let paddedImage = NSImage(size: paddedSize)
-                            paddedImage.lockFocus()
-                            
-                            let xOffset = (paddedSize.width - innerSize.width) / 2
-                            let yOffset = (paddedSize.height - innerSize.height) / 2
-                            originalImage.draw(
-                                in: NSRect(x: xOffset, y: yOffset, width: innerSize.width, height: innerSize.height),
-                                from: .zero,
-                                operation: .sourceOver,
-                                fraction: 1.0
-                            )
-                            
-                            paddedImage.unlockFocus()
-                            paddedImage.isTemplate = true
-                            return paddedImage
-                        }()
-                    ) {
-                        settingsView
-                    },
-                    Settings.Pane(
-                        identifier: Settings.PaneIdentifier("about"),
-                        title: "About",
-                        toolbarIcon: {
-                            let config = NSImage.SymbolConfiguration(pointSize: 24, weight: .regular)
-                            return NSImage(
-                                systemSymbolName: "info.square.fill",
-                                accessibilityDescription: nil
-                            )!.withSymbolConfiguration(config)!
-                        }()
-                    ) {
-                        aboutView
-                    }
-                ]
-            )
-        }
-        preferencesWindow?.show()
-    }
-    
-    // MARK: - Alert Handling
-    private func showAlert(
-        title: String, message: String, style: NSAlert.Style, buttons: [String] = ["OK"],
-        completion: ((NSApplication.ModalResponse) -> Void)? = nil
-    ) {
-        let alert = NSAlert()
-        alert.messageText = title
-        alert.informativeText = message
-        alert.alertStyle = style
-        buttons.forEach { alert.addButton(withTitle: $0) }
-        let response = alert.runModal()
-        completion?(response)
-    }
-    
-    // MARK: - Helper Functions
-    private func menuBarIcon(for state: Bool) -> NSImage {
-        let assetName = state ? "IconOn" : "IconOff"
-        let image = NSImage(named: assetName) ?? NSImage()
-        let ratio = image.size.height / image.size.width
-        image.size.height = 16
-        image.size.width = 16 / ratio
-        return image
-    }
-    
     private func isNewerVersion(_ newVersion: String, than currentVersion: String) -> Bool {
         let parse = { (version: String) in version.split(separator: ".").compactMap { Int($0) } }
         let newComponents = parse(newVersion)
@@ -172,5 +147,36 @@ struct FairyLightsApp: App {
             if new != current { return new > current }
         }
         return newComponents.count > currentComponents.count
+    }
+    
+    // MARK: Preferences Icons
+    private static func gearToolbarIcon(size: CGFloat = 24, innerSize: CGFloat = 18) -> NSImage {
+        let originalImage = NSImage(named: "squareGear") ?? NSImage(systemSymbolName: "gearshape", accessibilityDescription: nil)!
+        let paddedSize = NSSize(width: size, height: size)
+        let innerSize = NSSize(width: innerSize, height: innerSize)
+        
+        let paddedImage = NSImage(size: paddedSize)
+        paddedImage.lockFocus()
+        
+        let xOffset = (paddedSize.width - innerSize.width) / 2
+        let yOffset = (paddedSize.height - innerSize.height) / 2
+        originalImage.draw(
+            in: NSRect(x: xOffset, y: yOffset, width: innerSize.width, height: innerSize.height),
+            from: .zero,
+            operation: .sourceOver,
+            fraction: 1.0
+        )
+        
+        paddedImage.unlockFocus()
+        paddedImage.isTemplate = true
+        return paddedImage
+    }
+    
+    private static func infoToolbarIcon(size: CGFloat = 24) -> NSImage {
+        let config = NSImage.SymbolConfiguration(pointSize: size, weight: .regular)
+        return NSImage(
+            systemSymbolName: "info.square.fill",
+            accessibilityDescription: nil
+        )!.withSymbolConfiguration(config)!
     }
 }

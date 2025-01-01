@@ -34,8 +34,6 @@ Fairy Lights is a simple, decorative app for macOS built in Swift that float ben
 > - Scroll down and locate the prompt for `Fairy Lights.app`
 > - Click 'open anyway'
 >
-> Due to how the app works, this app is not, and cannot be sandboxed.
-> 
 > All assets were hand-drawn and are not included in this project.
 
 ## Contribute
