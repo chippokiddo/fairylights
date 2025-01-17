@@ -1,5 +1,5 @@
 <div align="center">
-       <img src="./assets/AppIcon.png" width="200" height="200" />
+       <img src="../FairyLights/Assets.xcassets/AppIcon.appiconset/256.png" width="200" height="200" />
        <h1>Fairy Lights</h1>
    </div>
 
@@ -34,7 +34,7 @@ Fairy Lights is a simple, decorative app for macOS built in Swift that float ben
 > - Scroll down and locate the prompt for `Fairy Lights.app`
 > - Click 'open anyway'
 >
-> All assets were hand-drawn and are not included in this project.
+> Some of assets are not included in this project.
 
 ## Contribute
 
@@ -43,3 +43,7 @@ Contributions are welcome! Follow these steps to contribute:
 1.  Fork the repository
 2.  Create a branch with your feature or bug fix
 3.  Submit a pull request for review
+
+## Translate
+
+You can help make this app more accessible by contributing translations! This project uses Xcode's string catalogs `Localizable.xcstrings` for localization. To learn how to edit or add translations, refer to [Apple's official documentation](https://developer.apple.com/documentation/xcode/localizing-and-varying-text-with-a-string-catalog).

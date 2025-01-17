@@ -81,11 +81,10 @@ struct AboutButton: View {
 
 extension Bundle {
     var appVersion: String {
-        return infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     }
+    
     var copyrightText: String {
-        let baseCopyright = object(forInfoDictionaryKey: "NSHumanReadableCopyright") as? String ?? ""
-        let currentYear = Calendar.current.component(.year, from: Date())
-        return baseCopyright.replacingOccurrences(of: "2024", with: "\(currentYear)")
+        return Bundle.main.object(forInfoDictionaryKey: "NSHumanReadableCopyright") as? String ?? "Copyright © chip"
     }
 }

@@ -12,7 +12,7 @@ struct SettingsView: View {
         .frame(width: 400, height: 150)
     }
     
-    // MARK: - Settings Form
+    // MARK: Settings Form
     private var SettingsForm: some View {
         Form {
             updateSection
@@ -20,7 +20,7 @@ struct SettingsView: View {
         .formStyle(.grouped)
     }
     
-    // MARK: - Update Section
+    // MARK: Update Section
     private var updateSection: some View {
         Section {
             HStack {

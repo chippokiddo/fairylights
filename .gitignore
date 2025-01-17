@@ -1,22 +1,28 @@
-# Ignore macOS system files
-.DS_Store
 
-# Ignore the entire Assets.xcassets folder
-Assets.xcassets/
-
-# Ignore build products and output
-build/
-
-# Ignore Xcode configuration files
-Config.xcconfig
-
-# Ignore DerivedData directory (Xcode build artifacts)
-DerivedData/
-
-# Ignore Xcode project
-Fairy Lights.xcodeproj
-
-# Ignore symbolic links
-github-visible
-gitignore-visible
-
+Fairy Lights.xcodeproj/project.pbxproj
+Fairy Lights.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+Fairy Lights.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+Fairy Lights.xcodeproj/project.xcworkspace/xcuserdata/blank.xcuserdatad/UserInterfaceState.xcuserstate
+Fairy Lights.xcodeproj/xcuserdata/blank.xcuserdatad/xcschemes/xcschememanagement.plist
+FairyLights/Assets.xcassets/bulb_blue_glow.imageset/2x.png
+FairyLights/Assets.xcassets/bulb_blue_glow.imageset/1x.png
+FairyLights/Assets.xcassets/bulb_blue.imageset/1x.png
+FairyLights/Assets.xcassets/bulb_blue.imageset/2x.png
+FairyLights/Assets.xcassets/bulb_green.imageset/1x.png
+FairyLights/Assets.xcassets/bulb_green.imageset/2x.png
+FairyLights/Assets.xcassets/bulb_green_glow.imageset/1x.png
+FairyLights/Assets.xcassets/bulb_green_glow.imageset/2x.png
+FairyLights/Assets.xcassets/bulb_red.imageset/1x.png
+FairyLights/Assets.xcassets/bulb_red.imageset/2x.png
+FairyLights/Assets.xcassets/bulb_red_glow.imageset/1x.png
+FairyLights/Assets.xcassets/bulb_red_glow.imageset/2x.png
+FairyLights/Assets.xcassets/bulb_yellow.imageset/1x.png
+FairyLights/Assets.xcassets/bulb_yellow.imageset/2x.png
+FairyLights/Assets.xcassets/bulb_yellow_glow.imageset/1x.png
+FairyLights/Assets.xcassets/bulb_yellow_glow.imageset/2x.png
+FairyLights/Assets.xcassets/IconOff.imageset/1x.png
+FairyLights/Assets.xcassets/IconOff.imageset/2x.png
+FairyLights/Assets.xcassets/IconOn.imageset/1x.png
+FairyLights/Assets.xcassets/IconOn.imageset/2x.png
+FairyLights/Assets.xcassets/squareGear.imageset/1x.png
+FairyLights/Assets.xcassets/squareGear.imageset/2x.png

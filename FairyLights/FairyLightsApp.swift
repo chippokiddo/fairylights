@@ -21,6 +21,10 @@ struct FairyLightsApp: App {
                 
                 Divider()
                 
+                Text("Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
                 Button(action: { checkForAppUpdates() }) {
                     Text(appState.isCheckingForUpdates ? "Checking..." : "Check for Updates")
                 }
