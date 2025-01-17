@@ -1,0 +1,39 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Check for Updates" : {
+
+    },
+    "Check for Updates Automatically" : {
+
+    },
+    "Checking..." : {
+
+    },
+    "Fairy Lights" : {
+
+    },
+    "Preferences..." : {
+
+    },
+    "Quit" : {
+
+    },
+    "Turn Off" : {
+
+    },
+    "Turn On" : {
+
+    },
+    "Updates will be checked once a day." : {
+
+    },
+    "Version %@" : {
+
+    },
+    "Version: %@" : {
+
+    }
+  },
+  "version" : "1.0"
+}
