@@ -1,28 +1,14 @@
-
-Fairy Lights.xcodeproj/project.pbxproj
-Fairy Lights.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-Fairy Lights.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
-Fairy Lights.xcodeproj/project.xcworkspace/xcuserdata/blank.xcuserdatad/UserInterfaceState.xcuserstate
-Fairy Lights.xcodeproj/xcuserdata/blank.xcuserdatad/xcschemes/xcschememanagement.plist
-FairyLights/Assets.xcassets/bulb_blue_glow.imageset/2x.png
-FairyLights/Assets.xcassets/bulb_blue_glow.imageset/1x.png
-FairyLights/Assets.xcassets/bulb_blue.imageset/1x.png
-FairyLights/Assets.xcassets/bulb_blue.imageset/2x.png
-FairyLights/Assets.xcassets/bulb_green.imageset/1x.png
-FairyLights/Assets.xcassets/bulb_green.imageset/2x.png
-FairyLights/Assets.xcassets/bulb_green_glow.imageset/1x.png
-FairyLights/Assets.xcassets/bulb_green_glow.imageset/2x.png
-FairyLights/Assets.xcassets/bulb_red.imageset/1x.png
-FairyLights/Assets.xcassets/bulb_red.imageset/2x.png
-FairyLights/Assets.xcassets/bulb_red_glow.imageset/1x.png
-FairyLights/Assets.xcassets/bulb_red_glow.imageset/2x.png
-FairyLights/Assets.xcassets/bulb_yellow.imageset/1x.png
-FairyLights/Assets.xcassets/bulb_yellow.imageset/2x.png
-FairyLights/Assets.xcassets/bulb_yellow_glow.imageset/1x.png
-FairyLights/Assets.xcassets/bulb_yellow_glow.imageset/2x.png
-FairyLights/Assets.xcassets/IconOff.imageset/1x.png
-FairyLights/Assets.xcassets/IconOff.imageset/2x.png
-FairyLights/Assets.xcassets/IconOn.imageset/1x.png
-FairyLights/Assets.xcassets/IconOn.imageset/2x.png
-FairyLights/Assets.xcassets/squareGear.imageset/1x.png
-FairyLights/Assets.xcassets/squareGear.imageset/2x.png
+project.pbxproj
+project.xcworkspace
+xcuserdata
+Assets.xcassets/bulb_blue_glow.imageset
+Assets.xcassets/bulb_blue.imageset
+Assets.xcassets/bulb_green.imageset
+Assets.xcassets/bulb_green_glow.imageset
+Assets.xcassets/bulb_red.imageset
+Assets.xcassets/bulb_red_glow.imageset
+Assets.xcassets/bulb_yellow.imageset
+Assets.xcassets/bulb_yellow_glow.imageset
+Assets.xcassets/IconOff.imageset
+Assets.xcassets/IconOn.imageset
+Assets.xcassets/squareGear.imageset
