@@ -8,7 +8,7 @@
             <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>2.4.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/chippokiddo/fairylights/blob/main/FairyLights.zip" length="1680687" type="application/octet-stream" sparkle:edSignature="Sna/0UnXJ5kQKv0kLtcc8jT5o7wnpzXiXn/KB0x4dNa09JyM09wl6LM6aKtmM18IBHENEpraPJ2nyZ3UjRudDA=="/>
+            <enclosure url="https://github.com/chippokiddo/fairylights/releases/download/2.4.0/FairyLights.zip" length="1680687" type="application/octet-stream" sparkle:edSignature="Sna/0UnXJ5kQKv0kLtcc8jT5o7wnpzXiXn/KB0x4dNa09JyM09wl6LM6aKtmM18IBHENEpraPJ2nyZ3UjRudDA=="/>
         </item>
     </channel>
 </rss>
