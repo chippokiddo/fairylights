@@ -3,12 +3,13 @@
     <channel>
         <title>Fairy Lights Appcast</title>
         <item>
-            <title>2.5.3</title>
-            <pubDate>Fri, 07 Mar 2025 12:10:24 +0000</pubDate>
-            <sparkle:version>253</sparkle:version>
-            <sparkle:shortVersionString>2.5.3</sparkle:shortVersionString>
+            <title>2.6.0</title>
+            <sparkle:releaseNotesLink>https://github.com/chippokiddo/fairylights/releases/latest</sparkle:releaseNotesLink>
+            <pubDate>Fri, 07 Mar 2025 16:03:32 +0000</pubDate>
+            <sparkle:version>260</sparkle:version>
+            <sparkle:shortVersionString>2.6.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/chippokiddo/fairylights/releases/download/2.5.3/FairyLights-2.5.3.zip" length="1660152" type="application/octet-stream" sparkle:edSignature="EBKkLqDG3CvHpsI5K+9Pp53Kkr/ho5uDF+8Qxd+ODStJydEsQa26R5ENOwzcLQpB3GaMjE/u+c/C2xPu/PZVCw==" />
+            <enclosure url="https://github.com/chippokiddo/fairylights/releases/download/2.5.3/FairyLights-2.6.0.zip" length="1731540" type="application/octet-stream" sparkle:edSignature="3grHRGO5aKVionKLO/K8jB4CH2mIz5G5iThU5IpBA5vi3UBkj5z0t3BcE3f5ldeFmyS/kbERzkYMTVzsfisxDg==" />
         </item>
     </channel>
 </rss>
