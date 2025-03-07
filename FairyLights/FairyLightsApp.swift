@@ -12,6 +12,11 @@ struct FairyLightsApp: App {
     private let gentleUpdaterDelegate = GentleUpdaterDelegate()
     
     init() {
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: "SUEnableAutomaticChecks") == nil {
+            defaults.set(false, forKey: "SUEnableAutomaticChecks")
+        }
+        
         updaterController = SPUStandardUpdaterController(
             startingUpdater: true,
             updaterDelegate: nil,
