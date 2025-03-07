@@ -1,9 +1,15 @@
 import SwiftUI
 
-struct BulbView: View {
+struct BulbView: View, Equatable {
     let currentColor: BulbColor
     let isGlowing: Bool
     let size: CGFloat
+    
+    static nonisolated func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.currentColor == rhs.currentColor &&
+        lhs.isGlowing == rhs.isGlowing &&
+        lhs.size == rhs.size
+    }
     
     var body: some View {
         ZStack {

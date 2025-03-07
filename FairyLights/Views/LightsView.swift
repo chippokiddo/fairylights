@@ -7,12 +7,30 @@ struct LightsView: View {
     
     @StateObject private var animationManager = BulbAnimationManager()
     
+    @State private var isViewAppeared = false
+    
     private let lightSpacing: CGFloat = 60
     private let verticalAmplitude: CGFloat = 10
     private let menuBarHeight = NSStatusBar.system.thickness
     private let bulbHeight: CGFloat = 30
     
     var body: some View {
+        Group {
+            if width > 0 {
+                lightsContent
+                    .onAppear {
+                        setupAndStartAnimations()
+                    }
+                    .onDisappear {
+                        cleanupAnimations()
+                    }
+            } else {
+                Color.clear.frame(width: 1, height: 1)
+            }
+        }
+    }
+    
+    private var lightsContent: some View {
         ZStack {
             let lightCount = Int((width / lightSpacing).rounded(.down)) + 1
             let startingOffset = (width - CGFloat(lightCount - 1) * lightSpacing) / 2
@@ -59,13 +77,23 @@ struct LightsView: View {
         }
         .frame(width: width, height: menuBarHeight + 2*bulbHeight + verticalAmplitude)
         .background(Color.clear)
-        .onAppear {
-            let lightCount = Int((width / lightSpacing).rounded(.down)) + 1
+    }
+    
+    private func setupAndStartAnimations() {
+        guard width > 0 else { return }
+        
+        let lightCount = Int((width / lightSpacing).rounded(.down)) + 1
+        
+        Task { @MainActor in
             animationManager.setupBulbs(count: lightCount)
             animationManager.startAnimations()
         }
-        .onDisappear {
-            animationManager.stopAnimations()
+    }
+    
+    private func cleanupAnimations() {
+        Task { @MainActor in
+            animationManager.prepareForDeinit()
+            animationManager.setupBulbs(count: 0)
         }
     }
 }
