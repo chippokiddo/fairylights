@@ -4,7 +4,6 @@
         <title>Fairy Lights Appcast</title>
         <item>
             <title>2.6.0</title>
-            <sparkle:releaseNotesLink>https://github.com/chippokiddo/fairylights/releases/latest</sparkle:releaseNotesLink>
             <pubDate>Fri, 07 Mar 2025 16:03:32 +0000</pubDate>
             <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>2.6.0</sparkle:shortVersionString>
