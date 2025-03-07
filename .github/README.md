@@ -1,17 +1,17 @@
 <div align="center">
-       <img src="../FairyLights/Assets.xcassets/AppIcon.appiconset/256.png" width="200" height="200" />
-       <h1>Fairy Lights</h1>
+	<img src="../FairyLights/Assets.xcassets/AppIcon.appiconset/256.png" width="200" height="200" />
+	<h1>Fairy Lights</h1>
 </div>
 
 ![macOS](https://img.shields.io/badge/macOS-14%2B-blue?style=flat&logo=apple)
-![Downloads](https://img.shields.io/github/downloads/chippokiddo/FairyLights/total)
+![Downloads](https://img.shields.io/github/downloads/chippokiddo/fairylights/total)
 [![Latest Downloads](https://img.shields.io/github/downloads/chippokiddo/fairylights/latest/total)](https://github.com/chippokiddo/FairyLights/releases/latest)
-[![License](https://img.shields.io/github/license/chippokiddo/FairyLights)](../LICENSE)
+[![License](https://img.shields.io/github/license/chippokiddo/fairylights)](../LICENSE)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?&logo=buy-me-a-coffee&logoColor=0D0C22)](https://buymeacoffee.com/chippo)
 
 Fairy Lights is a simple, decorative app for macOS built in Swift that float beneath the menu bar.
 
-![Demo](./assets/img01.gif)
+![Demo](./assets/demo.gif)
 
 ## Dependencies
 

@@ -1,12 +1,13 @@
 import SwiftUI
 import Quartz
+import Combine
 
 @MainActor
 class LightsController: ObservableObject {
     @Published var isLightsOn = false
     
-    private var windows: [NSWindow] = []
-    private var screenChangeTask: Task<Void, Never>?
+    private var windowControllers: [NSWindowController] = []
+    private var debounceTask: AnyCancellable?
     private var isObserverAdded = false
     
     init() {
@@ -19,28 +20,41 @@ class LightsController: ObservableObject {
             fadeInLights()
         } else {
             fadeOutLights()
-            cancelScreenTask()
+            cancelDebounceTask()
         }
     }
     
     private func fadeInLights() {
-        clearWindows()
-        
-        for screen in NSScreen.screens {
-            createLightWindow(for: screen)
+        if windowControllers.isEmpty {
+            createLightWindows()
         }
         
-        windows.forEach { $0.alphaValue = 0.0 }
+        windowControllers.forEach { controller in
+            let window = controller.window
+            window?.alphaValue = 0.0
+            window?.orderFront(nil)
+        }
+        
         animateWindows(alpha: 1.0)
     }
     
     private func fadeOutLights() {
-        animateWindows(alpha: 0.0) {
-            self.clearWindows()
+        animateWindows(alpha: 0.0) { [weak self] in
+            self?.windowControllers.forEach { $0.window?.orderOut(nil) }
+            self?.clearWindows()
         }
     }
     
-    private func createLightWindow(for screen: NSScreen) {
+    private func createLightWindows() {
+        clearWindows()
+        
+        for screen in NSScreen.screens {
+            let windowController = createLightWindowController(for: screen)
+            windowControllers.append(windowController)
+        }
+    }
+    
+    private func createLightWindowController(for screen: NSScreen) -> NSWindowController {
         let menuBarHeight = NSStatusBar.system.thickness
         let lightsHeight: CGFloat = 50
         
@@ -65,23 +79,22 @@ class LightsController: ObservableObject {
         window.contentView = NSHostingView(rootView: LightsView(width: screen.frame.width))
         window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
         window.isReleasedWhenClosed = false
-        window.orderFront(nil)
         
-        windows.append(window)
+        let controller = NSWindowController(window: window)
+        return controller
     }
     
     private func animateWindows(alpha: CGFloat, completion: (() -> Void)? = nil) {
-        guard !windows.isEmpty else { return }
+        guard !windowControllers.isEmpty else { return }
         
-        // Remove any existing animations
-        for window in self.windows {
-            window.contentView?.layer?.removeAllAnimations()
+        for controller in windowControllers {
+            controller.window?.contentView?.layer?.removeAllAnimations()
         }
         
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.5
-            for window in self.windows {
-                window.animator().alphaValue = alpha
+            for controller in self.windowControllers {
+                controller.window?.animator().alphaValue = alpha
             }
         } completionHandler: {
             completion?()
@@ -89,34 +102,44 @@ class LightsController: ObservableObject {
     }
     
     private func clearWindows() {
-        windows.forEach {
-            $0.contentView = nil
-            $0.close()
+        windowControllers.forEach {
+            $0.window?.contentView = nil
+            $0.window?.close()
         }
-        windows.removeAll()
+        windowControllers.removeAll()
     }
     
-    // Handle screen change safely
+    // MARK: Screen Change Handling with Debouncing
     private func handleScreenChange() {
-        guard isLightsOn else { return }
-        
-        // Cancel any existing task to avoid multiple instances
-        cancelScreenTask()
-        
-        // Start a new task for screen handling
-        screenChangeTask = Task { @MainActor in
-            refreshLights()
+        Task { @MainActor in
+            guard isLightsOn else { return }
+            
+            cancelDebounceTask()
+            
+            debounceTask = Just(())
+                .delay(for: .seconds(0.5), scheduler: RunLoop.main)
+                .sink { [weak self] _ in
+                    Task { @MainActor in
+                        self?.refreshLights()
+                    }
+                }
         }
     }
     
     private func refreshLights() {
-        clearWindows()
-        fadeInLights()
+        let currentAlphaValues = windowControllers.compactMap { $0.window?.alphaValue }
+        let wasVisible = !currentAlphaValues.isEmpty && currentAlphaValues.contains { $0 > 0 }
+        
+        createLightWindows()
+        
+        if wasVisible {
+            windowControllers.forEach { $0.window?.orderFront(nil) }
+            animateWindows(alpha: 1.0)
+        }
     }
     
-    // Add observer only once
     private func addScreenObserver() {
-        guard !isObserverAdded else { return } // Prevent duplicate observers
+        guard !isObserverAdded else { return }
         
         NotificationCenter.default.addObserver(
             forName: NSApplication.didChangeScreenParametersNotification,
@@ -131,16 +154,20 @@ class LightsController: ObservableObject {
         isObserverAdded = true
     }
     
-    // Cancel the running task, if any
-    private func cancelScreenTask() {
-        screenChangeTask?.cancel()
-        screenChangeTask = nil
+    private func cancelDebounceTask() {
+        debounceTask?.cancel()
+        debounceTask = nil
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: NSApplication.didChangeScreenParametersNotification, object: nil)
-        Task { @MainActor [weak self] in
-            self?.cancelScreenTask()
+        NotificationCenter.default.removeObserver(self)
+        
+        let cancelTask = cancelDebounceTask
+        let clearAllWindows = clearWindows
+        
+        Task { @MainActor in
+            cancelTask()
+            clearAllWindows()
         }
     }
 }
