@@ -5,8 +5,8 @@
 	<key>SUEnableAutomaticChecks</key>
 	<false/>
 	<key>SUFeedURL</key>
-	<string>https://github.com/chippokiddo/fairylights/blob/main/appcast.xml</string>
+	<string>https://chippokiddo.github.io/fairylights/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>RKG4rLXaGi8F1R/DK1oqjPW7DbWggea8aES4Ejh62Fo=</string>
+	<string>pf9I3RVyi78kY29cnqU+ickuqePe161bk6hQyB26zxI=</string>
 </dict>
 </plist>
