@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const fairyLights = document.getElementById("fairy-lights");
     const appIcon = document.getElementById("app-icon");
 
-    let isLightsEnabled = localStorage.getItem(LIGHTS_STORAGE_KEY) !== LIGHTS_DISABLED;
+    let isLightsEnabled = localStorage.getItem(LIGHTS_STORAGE_KEY) === LIGHTS_ENABLED;
     let isAnimating = false;
     let animationFrameId = null;
     let bulbs = [];
