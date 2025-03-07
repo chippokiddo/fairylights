@@ -19,8 +19,6 @@ struct FairyLightsApp: App {
         )
         
         gentleUpdaterDelegate.updaterController = updaterController
-        
-        updaterController.updater.automaticallyChecksForUpdates = true
     }
     
     private static var preferencesWindow: SettingsWindowController? = nil

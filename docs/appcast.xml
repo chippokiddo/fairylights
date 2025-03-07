@@ -3,12 +3,12 @@
     <channel>
         <title>Fairy Lights</title>
         <item>
-            <title>2.5.0</title>
-            <pubDate>Fri, 07 Mar 2025 03:31:37 +0000</pubDate>
+            <title>2.5.1</title>
+            <pubDate>Fri, 07 Mar 2025 04:37:14 +0000</pubDate>
             <sparkle:version>1</sparkle:version>
-            <sparkle:shortVersionString>2.5.0</sparkle:shortVersionString>
+            <sparkle:shortVersionString>2.5.1</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://chippokiddo.github.io/fairylights/assets/FairyLights-2.5.0.zip" length="1661024" type="application/octet-stream" sparkle:edSignature="O7+GYETSiG65ZXbVX+T87CRZeCE21KUhY2N7M/CQDH3jyWI/cn7lbPN7kx1ekRRsi5niDAb0SwI6jkzMTGmOCA=="/>
+            <enclosure url="https://chippokiddo.github.io/fairylights/assets/FairyLights-2.5.1.zip" length="1660600" type="application/octet-stream" sparkle:edSignature="/h+y4tBUy0WDtq/byxQzgLiWGfeuZUvI4tHbdEUyPCLdI/9ZZMgdcG3fDTg5Te4mty4irKtq4Ib3iqCtnhC6BA=="/>
         </item>
     </channel>
 </rss>
