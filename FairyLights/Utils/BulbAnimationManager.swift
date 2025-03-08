@@ -1,21 +1,32 @@
 import SwiftUI
-import Combine
 
 @MainActor
-class BulbAnimationManager: ObservableObject {
+final class BulbAnimationManager: ObservableObject {
     @Published private(set) var bulbStates: [BulbState] = []
     
-    private var masterTimer: AnyCancellable?
-    private var scheduledTasks: [DispatchWorkItem]? = []
+    private var animationTask: Task<Void, Never>?
+    private var scheduledTasks = [Task<Void, Never>]()
     private var isActive = false
     private var isInInitialRedState = false
     
-    private var lastGlowUpdateTimes: [TimeInterval]? = []
-    private var lastColorUpdateTimes: [TimeInterval]? = []
+    private var lastGlowUpdateTimes = [TimeInterval]()
+    private var lastColorUpdateTimes = [TimeInterval]()
     
     private let minGlowInterval: TimeInterval = 1.0
     private let minColorInterval: TimeInterval = 8.0
     private let timerFrequency: TimeInterval = 0.25
+    
+    deinit {
+        print("BulbAnimationManager deinit called")
+        
+        isActive = false
+        animationTask?.cancel()
+        
+        for task in scheduledTasks {
+            task.cancel()
+        }
+        
+    }
     
     func setupBulbs(count: Int) {
         stopAnimations()
@@ -25,15 +36,13 @@ class BulbAnimationManager: ObservableObject {
         lastGlowUpdateTimes = Array(repeating: currentTime, count: count)
         lastColorUpdateTimes = Array(repeating: currentTime, count: count)
         
-        if scheduledTasks == nil {
-            scheduledTasks = []
-        }
+        scheduledTasks.removeAll()
         
         bulbStates = (0..<count).map { _ in
             let isUpsideDown = Bool.random()
             let rotation = isUpsideDown
-                ? CGFloat.random(in: -10...10) + 180
-                : CGFloat.random(in: -10...10)
+            ? CGFloat.random(in: -10...10) + 180
+            : CGFloat.random(in: -10...10)
             
             return BulbState(
                 color: .red,
@@ -49,56 +58,72 @@ class BulbAnimationManager: ObservableObject {
         isActive = true
         
         if isInInitialRedState {
-            scheduledTasks?.forEach { $0.cancel() }
-            scheduledTasks?.removeAll(keepingCapacity: false)
+            for task in scheduledTasks {
+                task.cancel()
+            }
+            scheduledTasks.removeAll()
             
-            let workItem = DispatchWorkItem { [weak self] in
-                guard let self = self, self.isActive else { return }
-                self.isInInitialRedState = false
+            let task = Task { [weak self] in
+                try? await Task.sleep(for: .seconds(3.0))
                 
-                for (index, _) in self.bulbStates.enumerated() {
-                    let staggerDelay = Double(index) * 0.1
-                    self.startRandomizingBulb(at: index, withDelay: staggerDelay)
+                guard let self = self, self.isActive, !Task.isCancelled else { return }
+                
+                await MainActor.run {
+                    self.isInInitialRedState = false
+                    
+                    for (index, _) in self.bulbStates.enumerated() {
+                        let staggerDelay = Double(index) * 0.1
+                        self.startRandomizingBulb(at: index, withDelay: staggerDelay)
+                    }
                 }
             }
             
-            scheduledTasks?.append(workItem)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: workItem)
+            scheduledTasks.append(task)
         } else {
-            startMasterTimer()
+            startAnimationLoop()
         }
     }
     
-    private func startMasterTimer() {
-        masterTimer?.cancel()
+    private func startAnimationLoop() {
+        animationTask?.cancel()
         
-        masterTimer = Timer.publish(
-            every: timerFrequency,
-            on: .main,
-            in: .common
-        )
-        .autoconnect()
-        .sink { [weak self] _ in
-            guard let self = self, self.isActive else { return }
+        animationTask = Task { [weak self] in
+            guard let self = self else { return }
             
-            let currentTime = Date().timeIntervalSince1970
-            
-            guard let glowTimes = self.lastGlowUpdateTimes,
-                  let colorTimes = self.lastColorUpdateTimes,
-                  !self.bulbStates.isEmpty else { return }
-            
-            for index in 0..<self.bulbStates.count {
-                guard index < glowTimes.count, index < colorTimes.count else { continue }
+            for await _ in AsyncTimerSequence(interval: .seconds(self.timerFrequency)) {
+                guard self.isActive, !Task.isCancelled else { break }
                 
-                if currentTime - glowTimes[index] >= self.getNextGlowInterval(for: index) {
-                    self.updateGlowState(at: index)
-                    self.lastGlowUpdateTimes?[index] = currentTime
+                await MainActor.run {
+                    self.updateBulbs()
                 }
                 
-                if currentTime - colorTimes[index] >= self.getNextColorInterval(for: index) {
-                    self.updateColorState(at: index)
-                    self.lastColorUpdateTimes?[index] = currentTime
-                }
+                await Task.yield()
+            }
+        }
+    }
+    
+    private func updateBulbs() {
+        guard !bulbStates.isEmpty,
+              !lastGlowUpdateTimes.isEmpty,
+              !lastColorUpdateTimes.isEmpty,
+              bulbStates.count == lastGlowUpdateTimes.count,
+              bulbStates.count == lastColorUpdateTimes.count else {
+            return
+        }
+        
+        let currentTime = Date().timeIntervalSince1970
+        
+        for index in 0..<bulbStates.count {
+            guard isActive, !Task.isCancelled else { break }
+            
+            if currentTime - lastGlowUpdateTimes[index] >= getNextGlowInterval(for: index) {
+                updateGlowState(at: index)
+                lastGlowUpdateTimes[index] = currentTime
+            }
+            
+            if currentTime - lastColorUpdateTimes[index] >= getNextColorInterval(for: index) {
+                updateColorState(at: index)
+                lastColorUpdateTimes[index] = currentTime
             }
         }
     }
@@ -138,8 +163,7 @@ class BulbAnimationManager: ObservableObject {
         let currentColor = bulbStates[index].color
         let availableColors = BulbColor.allCases.filter { $0 != currentColor }
         
-        let newColorIndex = (index + Int(Date().timeIntervalSince1970)) % availableColors.count
-        let newColor = availableColors[newColorIndex]
+        let newColor = availableColors.randomElement() ?? availableColors[0]
         
         withAnimation(.easeInOut(duration: 1.2)) {
             bulbStates[index].color = newColor
@@ -147,89 +171,54 @@ class BulbAnimationManager: ObservableObject {
     }
     
     func stopAnimations() {
-        masterTimer?.cancel()
-        masterTimer = nil
-        
-        scheduledTasks?.forEach { $0.cancel() }
-        scheduledTasks?.removeAll(keepingCapacity: false)
-        
         isActive = false
         isInInitialRedState = false
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self, !self.isActive else { return }
-            self.aggressiveMemoryCleanup()
-        }
-    }
-    
-    private func aggressiveMemoryCleanup() {
-        bulbStates.removeAll(keepingCapacity: false)
+        animationTask?.cancel()
+        animationTask = nil
         
-        lastGlowUpdateTimes = nil
-        lastColorUpdateTimes = nil
-        scheduledTasks = nil
-        
-        for _ in 1...3 {
-            autoreleasepool {
-                // Empty autoreleasepool to flush retained objects
-            }
+        for task in scheduledTasks {
+            task.cancel()
         }
+        scheduledTasks.removeAll()
     }
     
     private func startRandomizingBulb(at index: Int, withDelay delay: Double = 0) {
-        guard index < bulbStates.count, isActive, scheduledTasks != nil else { return }
+        guard index < bulbStates.count, isActive else { return }
         
-        let workItem = DispatchWorkItem { [weak self] in
-            guard let self = self, self.isActive, index < self.bulbStates.count else { return }
-            
-            let newColor = BulbColor.allCases.filter { $0 != .red }[index % (BulbColor.allCases.count - 1)]
-            
-            withAnimation(.easeInOut(duration: 0.8)) {
-                self.bulbStates[index].color = newColor
+        let task = Task { [weak self] in
+            if delay > 0 {
+                try? await Task.sleep(for: .seconds(delay))
             }
             
-            let currentTime = Date().timeIntervalSince1970
-            if let colorTimes = self.lastColorUpdateTimes, index < colorTimes.count {
-                self.lastColorUpdateTimes?[index] = currentTime
-            }
+            guard let self = self, self.isActive,
+                  index < self.bulbStates.count,
+                  !Task.isCancelled else { return }
             
-            if self.masterTimer == nil {
-                self.startMasterTimer()
-            }
-        }
-        
-        scheduledTasks?.append(workItem)
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
-    }
-    
-    func prepareForDeinit() {
-        stopAnimations()
-        
-        masterTimer?.cancel()
-        masterTimer = nil
-        
-        scheduledTasks?.forEach { $0.cancel() }
-        scheduledTasks = nil
-        
-        bulbStates.removeAll(keepingCapacity: false)
-        lastGlowUpdateTimes = nil
-        lastColorUpdateTimes = nil
-        
-        for _ in 1...3 {
-            autoreleasepool {
-                // Empty autorelease pool
+            await MainActor.run {
+                let nonRedColors = BulbColor.allCases.filter { $0 != .red }
+                let newColor = nonRedColors[index % nonRedColors.count]
+                
+                withAnimation(.easeInOut(duration: 0.8)) {
+                    self.bulbStates[index].color = newColor
+                }
+                
+                let currentTime = Date().timeIntervalSince1970
+                if index < self.lastColorUpdateTimes.count {
+                    self.lastColorUpdateTimes[index] = currentTime
+                }
+                
+                if self.animationTask == nil {
+                    self.startAnimationLoop()
+                }
             }
         }
-    }
-    
-    deinit {
-        // Cannot access MainActor-isolated properties or methods in deinit
-        // All cleanup must be done by calling prepareForDeinit()
-        // manually before the object is deallocated
+        
+        scheduledTasks.append(task)
     }
 }
 
-struct BulbState: Equatable {
+struct BulbState: Equatable, Sendable {
     var color: BulbColor
     var isGlowing: Bool
     var rotation: CGFloat
@@ -240,5 +229,24 @@ struct BulbState: Equatable {
         lhs.isGlowing == rhs.isGlowing &&
         lhs.rotation == rhs.rotation &&
         lhs.isUpsideDown == rhs.isUpsideDown
+    }
+}
+
+struct AsyncTimerSequence: AsyncSequence {
+    typealias Element = Void
+    
+    let interval: Duration
+    
+    struct AsyncIterator: AsyncIteratorProtocol {
+        let interval: Duration
+        
+        mutating func next() async -> Element? {
+            try? await Task.sleep(for: interval)
+            return Task.isCancelled ? nil : ()
+        }
+    }
+    
+    func makeAsyncIterator() -> AsyncIterator {
+        AsyncIterator(interval: interval)
     }
 }

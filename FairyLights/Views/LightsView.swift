@@ -1,28 +1,30 @@
 import SwiftUI
 import AppKit
-import Combine
 
 struct LightsView: View {
     let width: CGFloat
     
-    @StateObject private var animationManager = BulbAnimationManager()
-    
-    @State private var isViewAppeared = false
+    @ObservedObject var animationManager: BulbAnimationManager
     
     private let lightSpacing: CGFloat = 60
     private let verticalAmplitude: CGFloat = 10
     private let menuBarHeight = NSStatusBar.system.thickness
     private let bulbHeight: CGFloat = 30
     
+    init(width: CGFloat, animationManager: BulbAnimationManager) {
+        self.width = width
+        self.animationManager = animationManager
+    }
+    
     var body: some View {
         Group {
             if width > 0 {
                 lightsContent
                     .onAppear {
-                        setupAndStartAnimations()
+                        setupAnimations()
                     }
                     .onDisappear {
-                        cleanupAnimations()
+                        stopAnimations()
                     }
             } else {
                 Color.clear.frame(width: 1, height: 1)
@@ -35,6 +37,7 @@ struct LightsView: View {
             let lightCount = Int((width / lightSpacing).rounded(.down)) + 1
             let startingOffset = (width - CGFloat(lightCount - 1) * lightSpacing) / 2
             
+            // Draw the wire
             Path { path in
                 path.move(to: CGPoint(x: startingOffset, y: menuBarHeight))
                 
@@ -53,6 +56,7 @@ struct LightsView: View {
             }
             .stroke(Color.black, lineWidth: 3)
             
+            // Draw the bulbs
             GeometryReader { geometry in
                 ForEach(0..<animationManager.bulbStates.count, id: \.self) { index in
                     let xOffset = startingOffset + CGFloat(index) * lightSpacing
@@ -79,7 +83,7 @@ struct LightsView: View {
         .background(Color.clear)
     }
     
-    private func setupAndStartAnimations() {
+    private func setupAnimations() {
         guard width > 0 else { return }
         
         let lightCount = Int((width / lightSpacing).rounded(.down)) + 1
@@ -90,9 +94,9 @@ struct LightsView: View {
         }
     }
     
-    private func cleanupAnimations() {
+    private func stopAnimations() {
         Task { @MainActor in
-            animationManager.prepareForDeinit()
+            animationManager.stopAnimations()
             animationManager.setupBulbs(count: 0)
         }
     }

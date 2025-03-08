@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Automatic Updates" : {
+
+    },
     "Check for Updates" : {
       "localizations" : {
         "en" : {
@@ -18,6 +21,7 @@
       }
     },
     "Check for Updates Automatically" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32,6 +36,12 @@
           }
         }
       }
+    },
+    "Check Frequency" : {
+
+    },
+    "Checking for Updates..." : {
+
     },
     "Checking..." : {
       "localizations" : {
@@ -61,6 +71,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diario"
+          }
+        }
+      }
+    },
+    "Download Update %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download Update %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargar Actualización %@"
+          }
+        }
+      }
+    },
+    "Error: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error: %@"
           }
         }
       }
@@ -149,6 +191,7 @@
       }
     },
     "Update Frequency" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -176,6 +219,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versión %@"
+          }
+        }
+      }
+    },
+    "Version %@ Available" : {
+
+    },
+    "Version %@ is available!" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@ is available!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡La versión %@ está disponible!"
           }
         }
       }
@@ -211,6 +274,26 @@
           }
         }
       }
+    },
+    "You are already on the latest version." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are already on the latest version."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya tienes la versión más reciente."
+          }
+        }
+      }
+    },
+    "You're up to date" : {
+
     }
   },
   "version" : "1.0"

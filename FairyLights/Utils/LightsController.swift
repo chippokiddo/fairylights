@@ -1,40 +1,16 @@
 import SwiftUI
 import Quartz
-import Combine
 
 @MainActor
-class LightsController: ObservableObject {
+final class LightsController: ObservableObject {
     @Published var isLightsOn = false
     
-    private var windowControllers: [NSWindowController]? = []
-    private var debounceTask: AnyCancellable?
-    private var observers: Set<AnyCancellable>? = Set()
+    private var windowControllers = [NSWindowController]()
+    private var animationManagers = [BulbAnimationManager]()
     private var isAnimating = false
     
-    private var memoryMonitor: DispatchSourceMemoryPressure?
-    
-    private var lastScreenUpdateTime: TimeInterval = 0
-    private let screenUpdateThrottle: TimeInterval = 1.0
-    
-    init() {
-        setupMemoryPressureMonitor()
-        addScreenObserver()
-    }
-    
-    private func setupMemoryPressureMonitor() {
-        memoryMonitor = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical])
-        memoryMonitor?.setEventHandler { [weak self] in
-            DispatchQueue.main.async {
-                self?.handleMemoryPressure()
-            }
-        }
-        memoryMonitor?.resume()
-    }
-    
-    private func handleMemoryPressure() {
-        if !isLightsOn {
-            aggressiveMemoryCleanup()
-        }
+    deinit {
+        print("LightsController deinit called")
     }
     
     func toggleLights() {
@@ -43,69 +19,69 @@ class LightsController: ObservableObject {
         isLightsOn.toggle()
         
         if isLightsOn {
-            fadeInLights()
+            displayLights()
         } else {
-            fadeOutLights()
-            cancelDebounceTask()
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
-                guard let self = self, !self.isLightsOn else { return }
-                self.aggressiveMemoryCleanup()
-            }
+            hideLights()
         }
     }
     
-    private func fadeInLights() {
+    private func displayLights() {
         isAnimating = true
         
-        if windowControllers?.isEmpty == false {
-            clearWindows()
-        }
+        clearWindows()
         
-        if windowControllers == nil {
-            windowControllers = []
-        }
-        
-        DispatchQueue.main.async { [weak self] in
+        Task { [weak self] in
             guard let self = self, self.isLightsOn else {
                 self?.isAnimating = false
                 return
             }
             
-            self.createLightWindows()
-            
-            self.windowControllers?.forEach { controller in
-                controller.window?.alphaValue = 0.0
-                controller.window?.orderFront(nil)
-            }
-            
-            self.animateWindows(alpha: 1.0) {
-                self.isAnimating = false
+            await MainActor.run {
+                self.createLightWindows()
+                
+                self.windowControllers.forEach { controller in
+                    controller.window?.alphaValue = 0.0
+                    controller.window?.orderFront(nil)
+                }
+                
+                self.animateWindowsIn {
+                    self.isAnimating = false
+                }
             }
         }
     }
     
-    private func fadeOutLights() {
-        guard windowControllers?.isEmpty == false else { return }
+    private func hideLights() {
+        guard !windowControllers.isEmpty else { return }
         
         isAnimating = true
         
-        animateWindows(alpha: 0.0) { [weak self] in
-            guard let self = self else { return }
+        let localControllers = windowControllers
+        
+        Task { [weak self] in
+            guard let self = self else {
+                await MainActor.run {
+                    for controller in localControllers {
+                        controller.window?.orderOut(nil)
+                    }
+                }
+                return
+            }
             
-            self.windowControllers?.forEach { $0.window?.orderOut(nil) }
-            self.clearWindows()
-            self.isAnimating = false
+            await MainActor.run {
+                self.animateWindowsOut {
+                    self.clearWindows()
+                    BulbView.clearImageCache()
+                    self.isAnimating = false
+                }
+            }
         }
     }
     
     private func createLightWindows() {
-        clearWindows()
-        
-        if let mainScreen = NSScreen.main {
-            if let windowController = createLightWindowController(for: mainScreen) {
-                windowControllers?.append(windowController)
-            }
+        guard let mainScreen = NSScreen.main else { return }
+        if let windowController = createLightWindowController(for: mainScreen) {
+            windowControllers.append(windowController)
         }
     }
     
@@ -133,7 +109,10 @@ class LightsController: ObservableObject {
         window.ignoresMouseEvents = true
         window.displaysWhenScreenProfileChanges = false
         
-        let lightsView = LightsView(width: screen.frame.width)
+        let animationManager = BulbAnimationManager()
+        self.animationManagers.append(animationManager)
+        
+        let lightsView = LightsView(width: screen.frame.width, animationManager: animationManager)
         let hostingView = NSHostingView(rootView: lightsView)
         
         hostingView.layer?.drawsAsynchronously = true
@@ -146,13 +125,33 @@ class LightsController: ObservableObject {
         return NSWindowController(window: window)
     }
     
-    private func animateWindows(alpha: CGFloat, completion: (() -> Void)? = nil) {
-        guard windowControllers?.isEmpty == false else {
-            completion?()
+    private func animateWindowsIn(completion: @escaping () -> Void) {
+        guard !windowControllers.isEmpty else {
+            completion()
             return
         }
         
-        windowControllers?.forEach { controller in
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.5
+            context.allowsImplicitAnimation = true
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            
+            self.windowControllers.forEach { controller in
+                controller.window?.animator().alphaValue = 1.0
+            }
+        } completionHandler: { [weak self] in
+            guard self != nil else { return }
+            completion()
+        }
+    }
+    
+    private func animateWindowsOut(completion: @escaping () -> Void) {
+        guard !windowControllers.isEmpty else {
+            completion()
+            return
+        }
+        
+        windowControllers.forEach { controller in
             controller.window?.contentView?.layer?.removeAllAnimations()
         }
         
@@ -161,137 +160,34 @@ class LightsController: ObservableObject {
             context.allowsImplicitAnimation = true
             context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
             
-            self.windowControllers?.forEach { controller in
-                controller.window?.animator().alphaValue = alpha
+            self.windowControllers.forEach { controller in
+                controller.window?.animator().alphaValue = 0.0
             }
-        } completionHandler: {
-            DispatchQueue.main.async {
-                completion?()
-            }
+        } completionHandler: { [weak self] in
+            guard let self = self else { return }
+            
+            self.windowControllers.forEach { $0.window?.orderOut(nil) }
+            completion()
         }
     }
     
     private func clearWindows() {
-        windowControllers?.forEach { controller in
+        let controllers = windowControllers
+        windowControllers.removeAll()
+        
+        for manager in animationManagers {
+            manager.stopAnimations()
+        }
+        animationManagers.removeAll()
+        
+        for controller in controllers {
             if let window = controller.window {
                 window.contentView?.layer?.removeAllAnimations()
                 
-                if let hostingView = window.contentView as? NSHostingView<LightsView> {
-                    hostingView.rootView = LightsView(width: 0)
-                }
-                
-                window.delegate = nil
                 window.contentView = nil
+                window.delegate = nil
                 window.close()
             }
         }
-        
-        windowControllers?.removeAll(keepingCapacity: false)
-    }
-    
-    private func aggressiveMemoryCleanup() {
-        clearWindows()
-        
-        windowControllers = nil
-        
-        for _ in 1...3 {
-            autoreleasepool {
-                // Empty autorelease pool to help flush retained objects
-            }
-        }
-        
-        #if DEBUG
-        NotificationCenter.default.post(name: NSNotification.Name("_UIApplicationMemoryWarningNotification"), object: nil)
-        #endif
-    }
-    
-    private func handleScreenChange() {
-        Task { @MainActor in
-            guard isLightsOn else { return }
-            
-            let currentTime = Date().timeIntervalSince1970
-            guard (currentTime - lastScreenUpdateTime) >= screenUpdateThrottle else { return }
-            lastScreenUpdateTime = currentTime
-            
-            cancelDebounceTask()
-            
-            if observers == nil {
-                observers = Set()
-            }
-            
-            debounceTask = Just(())
-                .delay(for: .seconds(1.0), scheduler: RunLoop.main)
-                .sink { [weak self] _ in
-                    Task { @MainActor in
-                        self?.refreshLights()
-                    }
-                }
-                
-            if let task = debounceTask, observers != nil {
-                observers?.insert(task)
-            }
-        }
-    }
-    
-    private func refreshLights() {
-        guard let controllers = windowControllers else { return }
-        
-        let currentAlphaValues = controllers.compactMap { $0.window?.alphaValue }
-        let wasVisible = !currentAlphaValues.isEmpty && currentAlphaValues.contains { $0 > 0 }
-        
-        guard wasVisible else { return }
-        
-        clearWindows()
-        createLightWindows()
-        windowControllers?.forEach { $0.window?.orderFront(nil) }
-        
-        windowControllers?.forEach { $0.window?.alphaValue = 1.0 }
-    }
-    
-    private func addScreenObserver() {
-        if observers == nil {
-            observers = Set()
-        }
-        
-        let publisher = NotificationCenter.default.publisher(
-            for: NSApplication.didChangeScreenParametersNotification
-        )
-        
-        let observer = publisher
-            .throttle(for: .seconds(1.0), scheduler: RunLoop.main, latest: true)
-            .sink { [weak self] _ in
-                Task { @MainActor in
-                    self?.handleScreenChange()
-                }
-            }
-        
-        observers?.insert(observer)
-    }
-    
-    @MainActor
-    private func cancelDebounceTask() {
-        debounceTask?.cancel()
-        debounceTask = nil
-    }
-    
-    func prepareForDeinit() {
-        memoryMonitor?.cancel()
-        memoryMonitor = nil
-        
-        observers?.forEach { $0.cancel() }
-        observers?.removeAll(keepingCapacity: false)
-        observers = nil
-        
-        cancelDebounceTask()
-        clearWindows()
-        windowControllers = nil
-        
-        aggressiveMemoryCleanup()
-    }
-    
-    deinit {
-        // Cannot access MainActor-isolated properties or methods in deinit
-        // All cleanup must be done by calling prepareForDeinit()
-        // manually before the object is deallocated
     }
 }

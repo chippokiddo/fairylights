@@ -5,6 +5,22 @@ struct BulbView: View, Equatable {
     let isGlowing: Bool
     let size: CGFloat
     
+    private static var imageCache: [String: Image] = [:]
+    
+    static func clearImageCache() {
+        imageCache.removeAll()
+    }
+    
+    private func cachedImage(named imageName: String) -> Image {
+        if let cachedImage = BulbView.imageCache[imageName] {
+            return cachedImage
+        }
+        
+        let image = Image(imageName)
+        BulbView.imageCache[imageName] = image
+        return image
+    }
+    
     static nonisolated func == (lhs: Self, rhs: Self) -> Bool {
         lhs.currentColor == rhs.currentColor &&
         lhs.isGlowing == rhs.isGlowing &&

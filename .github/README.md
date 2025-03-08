@@ -16,7 +16,6 @@ Fairy Lights is a simple, decorative app for macOS built in Swift that float ben
 ## Dependencies
 
 - [Settings](https://github.com/sindresorhus/Settings)
-- [Sparkle](https://github.com/sparkle-project/Sparkle)
 
 ## Features
 
