@@ -20,7 +20,7 @@ body:
       required: true
   - type: input
     attributes:
-      label: FairyLights Version
+      label: Fairy Lights Version
       placeholder: e.g., 1.0.0, 1.1.0
     validations:
       required: true
