@@ -24,7 +24,7 @@ Fairy Lights is a simple, decorative app for macOS built in Swift that float ben
 
 ## Install
 
-- Download the `FairyLights.zip` file from the [latest release](https://github.com/chippokiddo/FairyLights/releases/latest)
+- Download the `FairyLights-x.y.z.zip` file from the [latest release](https://github.com/chippokiddo/FairyLights/releases/latest)
 - Unzip the file and move `Fairy Lights.app` into your `Applications` folder
 - Control-click or right-click the app and select 'open'
 
