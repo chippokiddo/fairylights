@@ -2,172 +2,187 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fairy Lights - Decorative lights for macOS</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png" />
-  <link rel="manifest" href="assets/favicon/site.webmanifest" />
-  <link rel="stylesheet" href="css/styles.css" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="google-site-verification" content="0waj2sDbNIY4h2RLQr37sTNrwX8TL-MA8APmqBuTRXQ"/>
+    <meta name="title" content="Fairy Lights - Decorative lights for macOS"/>
+    <meta name="keywords" content="macOS, menu bar app, holiday lights, decorative lights, mac app, Swift, open source">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fairy Lights - Decorative lights for macOS">
+    <meta property="og:description"
+          content="Add some festive charm to your Mac with Fairy Lights, a menu bar app for the holidays.">
+    <meta property="og:url" content="https://chippokiddo.github.io/fairylights/">
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website">
+
+    <title>Fairy Lights - Decorative lights for macOS</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png"/>
+    <link rel="manifest" href="assets/favicon/site.webmanifest"/>
+    <link rel="stylesheet" href="css/styles.css"/>
 </head>
 
 <body>
-  <div class="main-container">
+<div class="main-container">
     <div id="snowfall-container" class="snowfall-container"></div>
 
     <header class="hero">
-      <div class="hero-background"></div>
+        <div class="hero-background"></div>
 
-      <div id="fairy-lights" class="fairy-lights hidden">
-        <div class="bulb bulb-red"></div>
-        <div class="bulb bulb-green"></div>
-        <div class="bulb bulb-blue"></div>
-        <div class="bulb bulb-yellow"></div>
-        <div class="bulb bulb-red"></div>
-        <div class="bulb bulb-green"></div>
-        <div class="bulb bulb-blue"></div>
-        <div class="bulb bulb-yellow"></div>
-        <div class="bulb bulb-red"></div>
-        <div class="bulb bulb-green"></div>
-        <div class="bulb bulb-blue"></div>
-        <div class="bulb bulb-yellow"></div>
-        <div class="bulb bulb-red"></div>
-        <div class="bulb bulb-green"></div>
-        <div class="bulb bulb-blue"></div>
-      </div>
-
-      <div class="theme-toggle-container">
-        <button id="snowfall-toggle-button" class="theme-toggle-button snowfall-toggle-button"
-          aria-label="Toggle snowfall">
-          <ion-icon name="snow-outline" class="snowfall-icon"></ion-icon>
-        </button>
-        <button id="theme-toggle-button" class="theme-toggle-button" aria-label="Toggle color theme">
-          <ion-icon name="sunny-outline" class="theme-icon sun-icon"></ion-icon>
-          <ion-icon name="moon-outline" class="theme-icon moon-icon"></ion-icon>
-          <ion-icon name="desktop-outline" class="theme-icon system-icon"></ion-icon>
-        </button>
-      </div>
-
-      <div class="hero-content">
-        <div class="app-icon-wrapper">
-          <img src="assets/icon.png" alt="Fairy Lights App Icon" id="app-icon" class="app-icon" width="128" height="128"
-            role="button" tabindex="0" aria-label="Toggle fairy lights" />
-          <div class="toggle-hint">Toggle lights</div>
+        <div id="fairy-lights" class="fairy-lights hidden">
+            <div class="bulb bulb-red"></div>
+            <div class="bulb bulb-green"></div>
+            <div class="bulb bulb-blue"></div>
+            <div class="bulb bulb-yellow"></div>
+            <div class="bulb bulb-red"></div>
+            <div class="bulb bulb-green"></div>
+            <div class="bulb bulb-blue"></div>
+            <div class="bulb bulb-yellow"></div>
+            <div class="bulb bulb-red"></div>
+            <div class="bulb bulb-green"></div>
+            <div class="bulb bulb-blue"></div>
+            <div class="bulb bulb-yellow"></div>
+            <div class="bulb bulb-red"></div>
+            <div class="bulb bulb-green"></div>
+            <div class="bulb bulb-blue"></div>
         </div>
 
-        <h1>Fairy Lights</h1>
-        <p class="tagline">Decorate your menu bar for the holiday season.</p>
+        <div class="theme-toggle-container">
+            <button id="snowfall-toggle-button" class="theme-toggle-button snowfall-toggle-button"
+                    aria-label="Toggle snowfall">
+                <ion-icon name="snow-outline" class="snowfall-icon"></ion-icon>
+            </button>
+            <button id="theme-toggle-button" class="theme-toggle-button" aria-label="Toggle color theme">
+                <ion-icon name="sunny-outline" class="theme-icon sun-icon"></ion-icon>
+                <ion-icon name="moon-outline" class="theme-icon moon-icon"></ion-icon>
+                <ion-icon name="desktop-outline" class="theme-icon system-icon"></ion-icon>
+            </button>
+        </div>
 
-        <a href="https://github.com/chippokiddo/fairylights/releases/download/2.7.0/FairyLights-2.7.0.zip" class="cta-button" download
-          aria-label="Download Latest Version">
-          Download Latest Version
-        </a>
-        <p class="version">Version 2.7.0 for macOS 14+</p>
-      </div>
+        <div class="hero-content">
+            <div class="app-icon-wrapper">
+                <img src="assets/icon.png" alt="Fairy Lights App Icon" id="app-icon" class="app-icon" width="128"
+                     height="128"
+                     role="button" tabindex="0" aria-label="Toggle fairy lights"/>
+                <div class="toggle-hint">Toggle lights</div>
+            </div>
+
+            <h1>Fairy Lights</h1>
+            <p class="tagline">Decorate your menu bar for the holiday season.</p>
+
+            <a href="https://github.com/chippokiddo/fairylights/releases/download/2.7.0/FairyLights-2.7.0.zip"
+               class="cta-button" download
+               aria-label="Download Latest Version">
+                Download Latest Version
+            </a>
+            <p class="version">Version 2.7.0 for macOS 14+</p>
+        </div>
     </header>
 
     <main>
-      <section class="features-section">
-        <h2 class="section-heading">Features</h2>
+        <section class="features-section">
+            <h2 class="section-heading">Features</h2>
 
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <ion-icon name="bulb"></ion-icon>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <ion-icon name="bulb"></ion-icon>
+                    </div>
+                    <h3>Menu Bar</h3>
+                    <p>
+                        Control your lights directly from the menu bar with just a couple of clicks.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <ion-icon name="flash"></ion-icon>
+                    </div>
+                    <h3>Lightweight</h3>
+                    <p>
+                        Runs quietly in the background without using much system resources.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <ion-icon name="logo-apple"></ion-icon>
+                    </div>
+                    <h3>Native</h3>
+                    <p>
+                        Written in Swift and designed specifically for macOS.
+                    </p>
+                </div>
             </div>
-            <h3>Menu Bar</h3>
-            <p>
-              Control your lights directly from the menu bar with just a couple of clicks.
-            </p>
-          </div>
+        </section>
 
-          <div class="feature-card">
-            <div class="feature-icon">
-              <ion-icon name="flash"></ion-icon>
+        <section class="screenshots-section">
+            <h2 class="section-heading">See Fairy Lights in Action</h2>
+
+            <div class="screenshot-wrapper">
+                <img src="assets/demo.gif" alt="Animated demonstration of Fairy Lights running in the macOS menu bar"
+                     class="screenshot" width="800" height="450" loading="lazy"/>
             </div>
-            <h3>Lightweight</h3>
-            <p>
-              Runs quietly in the background without using much system resources.
-            </p>
-          </div>
 
-          <div class="feature-card">
-            <div class="feature-icon">
-              <ion-icon name="logo-apple"></ion-icon>
+            <div class="screenshot-wrapper">
+                <img src="assets/menu.png" alt="Fairy Lights settings menu showing available options" class="screenshot"
+                     width="800" height="450" loading="lazy"/>
             </div>
-            <h3>Native</h3>
-            <p>
-              Written in Swift and designed specifically for macOS.
-            </p>
-          </div>
-        </div>
-  </div>
-  </section>
+        </section>
 
-  <section class="screenshots-section">
-    <h2 class="section-heading">See Fairy Lights in Action</h2>
+        <section class="open-source-section">
+            <div class="open-source-background"></div>
+            <h2 class="section-heading">Free and Open Source</h2>
 
-    <div class="screenshot-wrapper">
-      <img src="assets/demo.gif" alt="Animated demonstration of Fairy Lights running in the macOS menu bar"
-        class="screenshot" width="800" height="450" loading="lazy" />
-    </div>
+            <div class="open-source-content">
+                <p>
+                    Fairy Lights is completely free and open source, licensed under
+                    GPLv3. The code is available on GitHub for anyone to view, modify,
+                    or contribute to.
+                </p>
 
-    <div class="screenshot-wrapper">
-      <img src="assets/menu.png" alt="Fairy Lights settings menu showing available options" class="screenshot"
-        width="800" height="450" loading="lazy" />
-    </div>
-  </section>
+                <div class="github-button-wrapper">
+                    <a href="https://github.com/chippokiddo/fairylights" class="github-button" target="_blank"
+                       aria-label="View Fairy Lights source code on GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="github-icon"
+                             aria-hidden="true">
+                            <path
+                                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                            </path>
+                        </svg>
+                        View Source Code
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
 
-  <section class="open-source-section">
-    <div class="open-source-background"></div>
-    <h2 class="section-heading">Free and Open Source</h2>
+    <footer>
+        <p>Copyright &copy; 2024-
+            <script>document.write(new Date().getFullYear())</script>
+            <a href="https://github.com/chippokiddo"
+               target="_blank">chip</a> All rights reserved.
+        </p>
+        <p>
+            For support, feature requests, or bug reports, please
+            <a href="https://github.com/chippokiddo/fairylights/issues" target="_blank">
+                open an issue
+            </a>
+            on GitHub.
+        </p>
+    </footer>
+</div>
 
-    <div class="open-source-content">
-      <p>
-        Fairy Lights is completely free and open source, licensed under
-        GPLv3. The code is available on GitHub for anyone to view, modify,
-        or contribute to.
-      </p>
-
-      <div class="github-button-wrapper">
-        <a href="https://github.com/chippokiddo/fairylights" class="github-button" target="_blank"
-          aria-label="View Fairy Lights source code on GitHub">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="github-icon"
-            aria-hidden="true">
-            <path
-              d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
-            </path>
-          </svg>
-          View Source Code
-        </a>
-      </div>
-    </div>
-  </section>
-  </main>
-
-  <footer>
-    <p>Copyright &copy; 2024-
-      <script>document.write(new Date().getFullYear())</script> <a href="https://github.com/chippokiddo"
-        target="_blank">chip</a> All rights reserved.
-    </p>
-    <p>
-      For support, feature requests, or bug reports, please
-      <a href="https://github.com/chippokiddo/fairylights/issues" target="_blank">
-        open an issue
-      </a>
-      on GitHub.
-    </p>
-  </footer>
-  </div>
-
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-  <script src="js/snowfall.js"></script>
-  <script src="js/lights.js"></script>
-  <script src="js/theme.js"></script>
-  <script src="js/main.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
+<script src="js/snowfall.js"></script>
+<script src="js/lights.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/main.js"></script>
 </body>
 
 </html>
