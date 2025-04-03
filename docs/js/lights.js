@@ -1,195 +1,20 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const fairyLights = document.getElementById("fairy-lights");
-    const appIcon = document.getElementById("app-icon");
+function setLightsState(isOn) {
+    localStorage.setItem(LIGHTS_KEY, isOn);
+    const bulbs = document.querySelectorAll('.bulb');
 
-    let isLightsEnabled = false;
-    let isAnimating = false;
-    let animationFrameId = null;
-    let bulbs = [];
-
-    const config = {
-        colors: {
-            red: {base: "#ff5252", glow: "rgba(255, 82, 82, 0.8)"},
-            orange: {base: "#ff9800", glow: "rgba(255, 152, 0, 0.8)"},
-            yellow: {base: "#ffc107", glow: "rgba(255, 193, 7, 0.8)"},
-            green: {base: "#4caf50", glow: "rgba(76, 175, 80, 0.8)"},
-            blue: {base: "#2196f3", glow: "rgba(33, 150, 243, 0.8)"},
-            purple: {base: "#9c27b0", glow: "rgba(156, 39, 176, 0.8)"},
-            white: {base: "#f5f5f5", glow: "rgba(255, 255, 255, 0.7)"}
-        },
-        animationSettings: {
-            minIntensity: 0.7,
-            maxIntensity: 1.0,
-            minSwingAngle: -5,
-            maxSwingAngle: 5,
-            swingDuration: 3000,
-            glowDuration: 2000,
-            staggerDelay: 500
-        }
-    };
-
-    function init() {
-        if (!fairyLights || !appIcon) {
-            console.error("Required DOM elements for fairy lights not found");
-            return;
-        }
-
-        collectBulbs();
-        setupEventListeners();
-        initializeBulbs();
-
-        if (isLightsEnabled) {
-            showLights();
-        } else {
-            hideLights();
-        }
-
-        updateToggleVisual();
-    }
-
-    function collectBulbs() {
-        bulbs = Array.from(fairyLights.querySelectorAll(".bulb"));
-    }
-
-    function setupEventListeners() {
-        appIcon.addEventListener("click", toggleLights);
-
-        appIcon.addEventListener("keydown", function (event) {
-            if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                toggleLights();
-            }
-        });
-
-        document.addEventListener("visibilitychange", handleVisibilityChange);
-
-        document.body.addEventListener("themechange", updateBulbColors);
-    }
-
-    function initializeBulbs() {
-        bulbs.forEach((bulb, index) => {
-            const colorClass = Array.from(bulb.classList)
-                .find(cls => cls.startsWith('bulb-'));
-
-            bulb._colorType = colorClass.replace('bulb-', '');
-            bulb._initialDelay = index * config.animationSettings.staggerDelay;
-            bulb._swingPhase = Math.random() * Math.PI * 2;
-            bulb._glowPhase = Math.random() * Math.PI * 2;
-        });
-    }
-
-    function toggleLights() {
-        isLightsEnabled = !isLightsEnabled;
-
-        if (isLightsEnabled) {
-            showLights();
-        } else {
-            hideLights();
-        }
-
-        updateToggleVisual();
-    }
-
-    function showLights() {
-        fairyLights.classList.remove("hidden");
-        appIcon.classList.add("glowing");
-
-        if (!isAnimating) {
-            isAnimating = true;
-            animateLights();
-        }
-    }
-
-    function hideLights() {
-        fairyLights.classList.add("hidden");
-        appIcon.classList.remove("glowing");
-
-        if (isAnimating) {
-            isAnimating = false;
-            cancelAnimationFrame(animationFrameId);
-        }
-    }
-
-    function animateLights(timestamp) {
-        if (!isAnimating) return;
+    if (isOn) {
+        fairyLights.classList.remove('hidden');
+        appIcon.classList.add('glowing');
 
         bulbs.forEach((bulb) => {
-            const adjustedTime = timestamp - bulb._initialDelay;
-
-            const swingProgress = (Math.sin((adjustedTime + bulb._swingPhase) / config.animationSettings.swingDuration * Math.PI * 2) + 1) / 2;
-            const swingAngle = config.animationSettings.minSwingAngle +
-                swingProgress * (config.animationSettings.maxSwingAngle - config.animationSettings.minSwingAngle);
-
-            const glowProgress = (Math.sin((adjustedTime + bulb._glowPhase) / config.animationSettings.glowDuration * Math.PI * 2) + 1) / 2;
-            const intensity = config.animationSettings.minIntensity +
-                glowProgress * (config.animationSettings.maxIntensity - config.animationSettings.minIntensity);
-
-            updateBulbStyles(bulb, swingAngle, intensity);
+            bulb.classList.add('twinkling');
         });
+    } else {
+        fairyLights.classList.add('hidden');
+        appIcon.classList.remove('glowing');
 
-        animationFrameId = requestAnimationFrame(animateLights);
-    }
-
-    function updateBulbStyles(bulb, swingAngle, intensity) {
-        const colorType = bulb._colorType;
-        const colors = config.colors[colorType];
-
-        if (!colors) return;
-
-        bulb.style.transform = `rotate(${swingAngle}deg)`;
-
-        const isDarkTheme = document.body.classList.contains("dark-theme");
-        const glowSize = isDarkTheme ? 15 : 20;
-        const glowSpread = isDarkTheme ? 5 : 8;
-
-        bulb.style.backgroundColor = colors.base;
-        bulb.style.opacity = intensity;
-
-        const shadowSize = (glowSize * intensity);
-        const shadowSpread = (glowSpread * intensity);
-
-        if (!isDarkTheme) {
-            bulb.style.boxShadow = `0 0 ${shadowSize}px ${shadowSpread}px ${colors.glow}`;
-        } else {
-            bulb.style.boxShadow = `0 0 ${shadowSize}px ${shadowSpread}px ${colors.glow}`;
-        }
-    }
-
-    function updateBulbColors() {
-        bulbs.forEach(bulb => {
-            const swingStyle = bulb.style.transform;
-            const intensity = parseFloat(bulb.style.opacity) || config.animationSettings.maxIntensity;
-
-            updateBulbStyles(bulb,
-                parseFloat(swingStyle.replace('rotate(', '').replace('deg)', '')) || 0,
-                intensity);
+        bulbs.forEach((bulb) => {
+            bulb.classList.remove('twinkling');
         });
     }
-
-    function handleVisibilityChange() {
-        if (document.visibilityState === "visible") {
-            if (isLightsEnabled && !isAnimating) {
-                isAnimating = true;
-                animateLights();
-            }
-        } else {
-            isAnimating = false;
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-                animationFrameId = null;
-            }
-        }
-    }
-
-    function updateToggleVisual() {
-        if (isLightsEnabled) {
-            appIcon.classList.add("glowing");
-            appIcon.setAttribute("aria-pressed", "true");
-        } else {
-            appIcon.classList.remove("glowing");
-            appIcon.setAttribute("aria-pressed", "false");
-        }
-    }
-
-    init();
-});
+}
