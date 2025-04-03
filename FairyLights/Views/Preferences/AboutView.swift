@@ -1,11 +1,12 @@
 import SwiftUI
 
+// MARK: - AboutView
 struct AboutView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         ZStack {
-            // Match style with SettingsView
+            // Match style with GeneralView
             Form { }
                 .formStyle(.grouped)
                 .opacity(0)
@@ -24,10 +25,10 @@ struct AboutView: View {
                     .padding(.top, 10)
                 
                 VStack(spacing: 5) {
-                    Text("Version \(Bundle.main.appVersion)")
+                    Text("Version \(version)")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-                    Text(Bundle.main.copyrightText)
+                    Text(copyright)
                         .font(.footnote)
                         .foregroundColor(.secondary)
                 }
@@ -35,15 +36,15 @@ struct AboutView: View {
                 // Buttons
                 HStack(spacing: 20) {
                     AboutButton(
+                        url: "https://github.com/chippokiddo/fairylights",
                         title: "GitHub",
-                        systemImage: "link",
-                        url: "https://github.com/chippokiddo/fairylights"
+                        systemImage: "link"
                     )
                     
                     AboutButton(
+                        url: "https://www.buymeacoffee.com/chippo",
                         title: "Support",
-                        systemImage: "cup.and.saucer",
-                        url: "https://www.buymeacoffee.com/chippo"
+                        systemImage: "cup.and.saucer"
                     )
                 }
                 .padding(.top, 10)
@@ -52,17 +53,30 @@ struct AboutView: View {
             }
             .padding(30)
         }
-        .frame(width: 400, height: 320)
         .animation(.easeInOut(duration: 0.2), value: true)
+    }
+    
+    // MARK: - App Version
+    private var version: String {
+        let shortVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+        return "\(shortVersion) (\(buildNumber))"
+    }
+    
+    // MARK: - Copyright Text
+    private var copyright: String {
+        Bundle.main.infoDictionary?["NSHumanReadableCopyright"] as? String ?? "© chip"
     }
 }
 
-struct AboutButton: View {
+// MARK: - About Button
+private struct AboutButton: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var isHovered: Bool = false
+    
+    let url: String
     let title: String
     let systemImage: String
-    let url: String
-    @State private var isHovered: Bool = false
-    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         Link(destination: URL(string: url)!) {
@@ -88,15 +102,5 @@ struct AboutButton: View {
         .onHover { hovering in
             isHovered = hovering
         }
-    }
-}
-
-extension Bundle {
-    var appVersion: String {
-        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
-    }
-    
-    var copyrightText: String {
-        return Bundle.main.object(forInfoDictionaryKey: "NSHumanReadableCopyright") as? String ?? "Copyright © chip"
     }
 }

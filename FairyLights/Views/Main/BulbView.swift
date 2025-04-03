@@ -1,5 +1,17 @@
 import SwiftUI
 
+// MARK: - Bulb Colors
+enum BulbColor: String, CaseIterable {
+    case red
+    case green
+    case yellow
+    case blue
+    case orange
+    case purple
+    case white
+}
+
+// MARK: - Bulb View
 struct BulbView: View, Equatable {
     let currentColor: BulbColor
     let isGlowing: Bool
@@ -41,8 +53,4 @@ struct BulbView: View, Equatable {
                 .opacity(isGlowing ? 1.0 : 0.0)
         }
     }
-}
-
-enum BulbColor: String, CaseIterable {
-    case red, green, yellow, blue
 }

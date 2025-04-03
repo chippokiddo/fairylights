@@ -1,5 +1,4 @@
 import SwiftUI
-import AppKit
 
 struct LightsView: View {
     let width: CGFloat

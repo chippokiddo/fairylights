@@ -1,13 +1,15 @@
 import SwiftUI
 
-struct SettingsView: View {
-    @ObservedObject var updateManager: UpdateManager
+struct GeneralView: View {
     @AppStorage("automaticUpdateChecks") private var automaticUpdateChecks = false
-    @AppStorage("updateCheckFrequency") private var updateCheckFrequency: Double = 604800.0
+    @AppStorage("lightMode") private var lightMode: String = LightMode.classic.rawValue
+    @AppStorage("updateCheckFrequency") private var updateCheckFrequency: Double = 604800.0 // Default to weekly
     
-    @State private var isCheckingManually = false
+    @ObservedObject var updateManager: UpdateManager
+    @ObservedObject var lightsController: LightsController
+    
     @Environment(\.colorScheme) private var colorScheme
-    
+        
     var body: some View {
         Form {
             Section {
@@ -22,12 +24,14 @@ struct SettingsView: View {
                 checkForUpdatesButton
                 updateStatusView
             }
+            
+            lightModeSelection
         }
         .formStyle(.grouped)
+        .onChange(of: lightMode) {
+            lightsController.syncLightMode()
+        }
         .animation(.easeInOut(duration: 0.2), value: automaticUpdateChecks)
-        .animation(.easeInOut(duration: 0.3), value: updateManager.isUpdateAvailable)
-        .animation(.easeInOut(duration: 0.3), value: updateManager.errorMessage)
-        .frame(width: 400, height: 230)
     }
     
     private var updateToggleRow: some View {
@@ -56,17 +60,12 @@ struct SettingsView: View {
     
     private var checkForUpdatesButton: some View {
         Button {
-            isCheckingManually = true
-            Task {
-                updateManager.checkForUpdates()
-                try? await Task.sleep(for: .seconds(0.5))
-                isCheckingManually = false
-            }
+            updateManager.checkForUpdates()
         } label: {
             HStack {
                 Spacer()
                 Group {
-                    if updateManager.isChecking || isCheckingManually {
+                    if updateManager.status == .checking {
                         ProgressView()
                             .controlSize(.small)
                             .padding(.trailing, 5)
@@ -81,12 +80,13 @@ struct SettingsView: View {
             }
         }
         .buttonStyle(.borderless)
-        .disabled(updateManager.isChecking || isCheckingManually)
+        .disabled(updateManager.status == .checking)
     }
     
     @ViewBuilder
     private var updateStatusView: some View {
-        if updateManager.isUpdateAvailable, let version = updateManager.latestVersion {
+        switch updateManager.status {
+        case .available(let version, _):
             Button {
                 updateManager.downloadUpdate()
             } label: {
@@ -99,17 +99,19 @@ struct SettingsView: View {
                 }
             }
             .buttonStyle(.borderless)
-        } else if let error = updateManager.errorMessage {
+            
+        case .error(let message):
             HStack {
                 Spacer()
-                Label("Error: \(error)", systemImage: "exclamationmark.triangle")
+                Label("Error: \(message)", systemImage: "exclamationmark.triangle")
                     .symbolVariant(.fill)
                     .foregroundStyle(.orange)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
                 Spacer()
             }
-        } else if updateManager.hasCheckedForUpdates && !updateManager.isChecking && !isCheckingManually {
+            
+        case .upToDate:
             HStack {
                 Spacer()
                 Label("You're up to date", systemImage: "checkmark.circle")
@@ -117,6 +119,20 @@ struct SettingsView: View {
                     .foregroundStyle(.green)
                 Spacer()
             }
+            
+        default:
+            EmptyView()
+        }
+    }
+    
+    private var lightModeSelection: some View {
+        Section {
+            Picker("Light Mode", selection: $lightMode) {
+                ForEach(LightMode.allCases, id: \.self) { mode in
+                    Text(mode.rawValue.capitalized).tag(mode.rawValue)
+                }
+            }
+            .pickerStyle(.segmented)
         }
     }
 }

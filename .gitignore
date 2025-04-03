@@ -9,7 +9,12 @@ bulb_red.imageset
 bulb_red_glow.imageset
 bulb_yellow.imageset
 bulb_yellow_glow.imageset
+bulb_purple_glow.imageset
+bulb_purple.imageset
+bulb_orange_glow.imageset
+bulb_orange.imageset
+bulb_white_glow.imageset
+bulb_white.imageset
 IconOff.imageset
 IconOn.imageset
-squareGear.imageset
 .idea

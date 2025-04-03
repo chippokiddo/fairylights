@@ -1,16 +1,48 @@
 import SwiftUI
-import Quartz
+import Combine
 
 @MainActor
 final class LightsController: ObservableObject {
     @Published var isLightsOn = false
+    @Published private var observedLightMode: String
     
+    private var lastLightMode: String = UserDefaults.standard.string(forKey: "lightMode") ?? LightMode.classic.rawValue
     private var windowControllers = [NSWindowController]()
     private var animationManagers = [BulbAnimationManager]()
+    private var cancellables = Set<AnyCancellable>()
     private var isAnimating = false
+    
+    init() {
+        self.observedLightMode = UserDefaults.standard.string(forKey: "lightMode") ?? LightMode.classic.rawValue
+
+        $observedLightMode
+            .removeDuplicates()
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+
+                if newValue != self.lastLightMode {
+                    self.lastLightMode = newValue
+
+                    if self.isLightsOn {
+                        self.toggleLights()
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+                            guard let self = self else { return }
+                            self.toggleLights()
+                        }
+                    }
+                }
+            }
+            .store(in: &cancellables)
+    }
     
     deinit {
         print("LightsController deinit called")
+    }
+    
+    func syncLightMode() {
+        let newValue = UserDefaults.standard.string(forKey: "lightMode") ?? LightMode.classic.rawValue
+        observedLightMode = newValue
     }
     
     func toggleLights() {
@@ -110,6 +142,7 @@ final class LightsController: ObservableObject {
         window.displaysWhenScreenProfileChanges = false
         
         let animationManager = BulbAnimationManager()
+        animationManager.lightMode = LightMode(rawValue: UserDefaults.standard.string(forKey: "lightMode") ?? "classic") ?? .classic
         self.animationManagers.append(animationManager)
         
         let lightsView = LightsView(width: screen.frame.width, animationManager: animationManager)

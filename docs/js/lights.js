@@ -1,22 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const LIGHTS_STORAGE_KEY = "fairy-lights-preference";
-    const LIGHTS_ENABLED = "enabled";
-    const LIGHTS_DISABLED = "disabled";
-
     const fairyLights = document.getElementById("fairy-lights");
     const appIcon = document.getElementById("app-icon");
 
-    let isLightsEnabled = localStorage.getItem(LIGHTS_STORAGE_KEY) === LIGHTS_ENABLED;
+    let isLightsEnabled = false;
     let isAnimating = false;
     let animationFrameId = null;
     let bulbs = [];
 
     const config = {
         colors: {
-            red: { base: "#ff5252", glow: "rgba(255, 82, 82, 0.8)" },
-            green: { base: "#4caf50", glow: "rgba(76, 175, 80, 0.8)" },
-            blue: { base: "#2196f3", glow: "rgba(33, 150, 243, 0.8)" },
-            yellow: { base: "#ffc107", glow: "rgba(255, 193, 7, 0.8)" }
+            red: {base: "#ff5252", glow: "rgba(255, 82, 82, 0.8)"},
+            orange: {base: "#ff9800", glow: "rgba(255, 152, 0, 0.8)"},
+            yellow: {base: "#ffc107", glow: "rgba(255, 193, 7, 0.8)"},
+            green: {base: "#4caf50", glow: "rgba(76, 175, 80, 0.8)"},
+            blue: {base: "#2196f3", glow: "rgba(33, 150, 243, 0.8)"},
+            purple: {base: "#9c27b0", glow: "rgba(156, 39, 176, 0.8)"},
+            white: {base: "#f5f5f5", glow: "rgba(255, 255, 255, 0.7)"}
         },
         animationSettings: {
             minIntensity: 0.7,
@@ -36,9 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         collectBulbs();
-
         setupEventListeners();
-
         initializeBulbs();
 
         if (isLightsEnabled) {
@@ -46,6 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             hideLights();
         }
+
+        updateToggleVisual();
     }
 
     function collectBulbs() {
@@ -83,12 +82,12 @@ document.addEventListener("DOMContentLoaded", function () {
         isLightsEnabled = !isLightsEnabled;
 
         if (isLightsEnabled) {
-            localStorage.setItem(LIGHTS_STORAGE_KEY, LIGHTS_ENABLED);
             showLights();
         } else {
-            localStorage.setItem(LIGHTS_STORAGE_KEY, LIGHTS_DISABLED);
             hideLights();
         }
+
+        updateToggleVisual();
     }
 
     function showLights() {
@@ -114,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function animateLights(timestamp) {
         if (!isAnimating) return;
 
-        bulbs.forEach((bulb, index) => {
+        bulbs.forEach((bulb) => {
             const adjustedTime = timestamp - bulb._initialDelay;
 
             const swingProgress = (Math.sin((adjustedTime + bulb._swingPhase) / config.animationSettings.swingDuration * Math.PI * 2) + 1) / 2;
@@ -179,6 +178,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 cancelAnimationFrame(animationFrameId);
                 animationFrameId = null;
             }
+        }
+    }
+
+    function updateToggleVisual() {
+        if (isLightsEnabled) {
+            appIcon.classList.add("glowing");
+            appIcon.setAttribute("aria-pressed", "true");
+        } else {
+            appIcon.classList.remove("glowing");
+            appIcon.setAttribute("aria-pressed", "false");
         }
     }
 

@@ -1,8 +1,10 @@
 import SwiftUI
 
+// MARK: - Bulb Animation Manager
 @MainActor
 final class BulbAnimationManager: ObservableObject {
     @Published private(set) var bulbStates: [BulbState] = []
+    @Published var lightMode: LightMode = .classic
     
     private var animationTask: Task<Void, Never>?
     private var scheduledTasks = [Task<Void, Never>]()
@@ -17,8 +19,6 @@ final class BulbAnimationManager: ObservableObject {
     private let timerFrequency: TimeInterval = 0.25
     
     deinit {
-        print("BulbAnimationManager deinit called")
-        
         isActive = false
         animationTask?.cancel()
         
@@ -38,17 +38,20 @@ final class BulbAnimationManager: ObservableObject {
         
         scheduledTasks.removeAll()
         
-        bulbStates = (0..<count).map { _ in
+        bulbStates = (0..<count).map { index in
             let isUpsideDown = Bool.random()
             let rotation = isUpsideDown
             ? CGFloat.random(in: -10...10) + 180
             : CGFloat.random(in: -10...10)
             
+            let phaseOffset = Double(index) * 0.4 + Double.random(in: 0...0.5)
+            
             return BulbState(
                 color: .red,
                 isGlowing: true,
                 rotation: rotation,
-                isUpsideDown: isUpsideDown
+                isUpsideDown: isUpsideDown,
+                phaseOffset: phaseOffset
             )
         }
     }
@@ -103,27 +106,47 @@ final class BulbAnimationManager: ObservableObject {
     }
     
     private func updateBulbs() {
-        guard !bulbStates.isEmpty,
-              !lastGlowUpdateTimes.isEmpty,
-              !lastColorUpdateTimes.isEmpty,
-              bulbStates.count == lastGlowUpdateTimes.count,
-              bulbStates.count == lastColorUpdateTimes.count else {
-            return
-        }
+        guard !bulbStates.isEmpty else { return }
         
         let currentTime = Date().timeIntervalSince1970
         
         for index in 0..<bulbStates.count {
-            guard isActive, !Task.isCancelled else { break }
+            guard isActive else { break }
             
-            if currentTime - lastGlowUpdateTimes[index] >= getNextGlowInterval(for: index) {
-                updateGlowState(at: index)
-                lastGlowUpdateTimes[index] = currentTime
-            }
-            
-            if currentTime - lastColorUpdateTimes[index] >= getNextColorInterval(for: index) {
-                updateColorState(at: index)
-                lastColorUpdateTimes[index] = currentTime
+            switch lightMode {
+            case .classic:
+                if currentTime - lastGlowUpdateTimes[index] >= getNextGlowInterval(for: index) {
+                    updateGlowState(at: index)
+                    lastGlowUpdateTimes[index] = currentTime
+                }
+                if currentTime - lastColorUpdateTimes[index] >= getNextColorInterval(for: index) {
+                    updateColorState(at: index)
+                    lastColorUpdateTimes[index] = currentTime
+                }
+                
+            case .pulse:
+                let pulsePeriod = 1.5
+                let offset = bulbStates[index].phaseOffset
+                let phase = sin((2 * .pi / pulsePeriod) * currentTime + offset)
+                
+                let shouldGlow = phase > 0
+                if bulbStates[index].isGlowing != shouldGlow {
+                    withAnimation(.easeInOut(duration: 0.6)) {
+                        bulbStates[index].isGlowing = shouldGlow
+                    }
+                }
+                
+            case .breathe:
+                let breathePeriod = 6.0
+                let offset = bulbStates[index].phaseOffset
+                let phase = sin((2 * .pi / breathePeriod) * currentTime + offset)
+                
+                let shouldGlow = phase > -0.2
+                if bulbStates[index].isGlowing != shouldGlow {
+                    withAnimation(.easeInOut(duration: 1.0)) {
+                        bulbStates[index].isGlowing = shouldGlow
+                    }
+                }
             }
         }
     }
@@ -218,20 +241,24 @@ final class BulbAnimationManager: ObservableObject {
     }
 }
 
+// MARK: - Bulb State
 struct BulbState: Equatable, Sendable {
     var color: BulbColor
     var isGlowing: Bool
     var rotation: CGFloat
     var isUpsideDown: Bool
+    var phaseOffset: Double = 0
     
     static func == (lhs: BulbState, rhs: BulbState) -> Bool {
         lhs.color == rhs.color &&
         lhs.isGlowing == rhs.isGlowing &&
         lhs.rotation == rhs.rotation &&
-        lhs.isUpsideDown == rhs.isUpsideDown
+        lhs.isUpsideDown == rhs.isUpsideDown &&
+        lhs.phaseOffset == rhs.phaseOffset
     }
 }
 
+// MARK: - Async Timer Sequence
 struct AsyncTimerSequence: AsyncSequence {
     typealias Element = Void
     
@@ -249,4 +276,11 @@ struct AsyncTimerSequence: AsyncSequence {
     func makeAsyncIterator() -> AsyncIterator {
         AsyncIterator(interval: interval)
     }
+}
+
+// MARK: - Light Modes
+enum LightMode: String, CaseIterable {
+    case classic
+    case pulse
+    case breathe
 }

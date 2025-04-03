@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="../FairyLights/Assets.xcassets/AppIcon.appiconset/256.png" width="200" height="200" />
+	<img src="../FairyLights/Assets.xcassets/AppIcon.appiconset/icon_256x256.png" width="200" height="200" />
 	<h1>Fairy Lights</h1>
 </div>
 
@@ -13,14 +13,12 @@ Fairy Lights is a simple, decorative app for macOS built in Swift that float ben
 
 ![Demo](./assets/demo.gif)
 
-## Dependencies
-
-- [Settings](https://github.com/sindresorhus/Settings)
-
 ## Features
 
-- Lives in the macOS menu bar
 - Subtle, twinkling fairy lights
+- Lives in the macOS menu bar
+- Select different light modes: classic, pulse, or breathe
+- Bulb colors: red, orange, yellow, green, blue, purple, and white
 
 ## Install
 

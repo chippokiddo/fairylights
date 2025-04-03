@@ -2,16 +2,17 @@
   "sourceLanguage" : "en",
   "strings" : {
     "Automatic Updates" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizaciones Automáticas"
+          }
+        }
+      }
     },
     "Check for Updates" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Check for Updates"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20,53 +21,28 @@
         }
       }
     },
-    "Check for Updates Automatically" : {
-      "extractionState" : "stale",
+    "Check Frequency" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Check for Updates Automatically"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buscar Actualizaciones Automáticamente"
+            "value" : "Verificar Frecuencia de Actualización"
           }
         }
       }
     },
-    "Check Frequency" : {
-
-    },
     "Checking for Updates..." : {
-
-    },
-    "Checking..." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Checking..."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comprobando…"
+            "value" : "Buscar Actualizaciones…"
           }
         }
       }
     },
     "Daily" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daily"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -75,30 +51,8 @@
         }
       }
     },
-    "Download Update %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Download Update %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descargar Actualización %@"
-          }
-        }
-      }
-    },
     "Error: %@" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error: %@"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -110,14 +64,18 @@
     "Fairy Lights" : {
       "shouldTranslate" : false
     },
-    "Monthly" : {
+    "Light Mode" : {
       "localizations" : {
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monthly"
+            "value" : "Modo de Iluminación"
           }
-        },
+        }
+      }
+    },
+    "Monthly" : {
+      "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -126,14 +84,18 @@
         }
       }
     },
-    "Preferences..." : {
+    "Preferences" : {
       "localizations" : {
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preferences..."
+            "value" : "Preferencias"
           }
-        },
+        }
+      }
+    },
+    "Preferences..." : {
+      "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -144,12 +106,6 @@
     },
     "Quit" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quit"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -160,12 +116,6 @@
     },
     "Turn Off" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Turn Off"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -176,12 +126,6 @@
     },
     "Turn On" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Turn On"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -190,31 +134,8 @@
         }
       }
     },
-    "Update Frequency" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Update Frequency"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Frecuencia de Actualización"
-          }
-        }
-      }
-    },
     "Version %@" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version %@"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -224,33 +145,17 @@
       }
     },
     "Version %@ Available" : {
-
-    },
-    "Version %@ is available!" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version %@ is available!"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¡La versión %@ está disponible!"
+            "value" : "Versión %@ Disponible"
           }
         }
       }
     },
     "Version: %@" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version: %@"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -261,12 +166,6 @@
     },
     "Weekly" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weekly"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -275,25 +174,15 @@
         }
       }
     },
-    "You are already on the latest version." : {
-      "extractionState" : "stale",
+    "You're up to date" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You are already on the latest version."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ya tienes la versión más reciente."
+            "value" : "Estás actualizado"
           }
         }
       }
-    },
-    "You're up to date" : {
-
     }
   },
   "version" : "1.0"
