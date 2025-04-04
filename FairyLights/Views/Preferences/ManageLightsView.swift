@@ -6,13 +6,17 @@ struct ManageLightsView: View {
     
     @ObservedObject var lightsController: LightsController
     
-    @State private var isLightsOn: Bool = false
-
     var body: some View {
         Form {
             Section {
-                Toggle("Toggle Lights", isOn: $isLightsOn)
-                    .toggleStyle(.switch)
+                Toggle("Toggle Lights", isOn:
+                    Binding<Bool>(
+                        get: { lightsController.isLightsOn },
+                        set: { newValue in
+                            lightsController.toggleLights()
+                        }
+                    )
+                )
             }
             
             Section {
@@ -35,12 +39,6 @@ struct ManageLightsView: View {
             }
         }
         .formStyle(.grouped)
-        .onAppear {
-            isLightsOn = lightsController.isLightsOn
-        }
-        .onChange(of: isLightsOn) { _, newValue in
-            lightsController.toggleLights()
-        }
         .onChange(of: lightMode) {
             lightsController.syncLightMode()
         }
