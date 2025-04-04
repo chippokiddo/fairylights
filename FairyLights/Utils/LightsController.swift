@@ -5,6 +5,7 @@ import Combine
 final class LightsController: ObservableObject {
     @Published var isLightsOn = false
     @Published private var observedLightMode: String
+    @Published private var observedSolidColor: String = UserDefaults.standard.string(forKey: "solidColorChoice") ?? "default"
     
     private var lastLightMode: String = UserDefaults.standard.string(forKey: "lightMode") ?? LightMode.classic.rawValue
     private var windowControllers = [NSWindowController]()
@@ -34,6 +35,21 @@ final class LightsController: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+        
+        $observedSolidColor
+            .removeDuplicates()
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+
+                if self.isLightsOn {
+                    self.toggleLights()
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                        self.toggleLights()
+                    }
+                }
+            }
+            .store(in: &cancellables)
     }
     
     deinit {
@@ -43,6 +59,11 @@ final class LightsController: ObservableObject {
     func syncLightMode() {
         let newValue = UserDefaults.standard.string(forKey: "lightMode") ?? LightMode.classic.rawValue
         observedLightMode = newValue
+    }
+    
+    func syncSolidColor() {
+        let newValue = UserDefaults.standard.string(forKey: "solidColorChoice") ?? "default"
+        observedSolidColor = newValue
     }
     
     func toggleLights() {

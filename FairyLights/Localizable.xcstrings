@@ -41,12 +41,32 @@
         }
       }
     },
+    "Color" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color"
+          }
+        }
+      }
+    },
     "Daily" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diario"
+          }
+        }
+      }
+    },
+    "Default" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predeterminado"
           }
         }
       }
@@ -110,6 +130,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salir"
+          }
+        }
+      }
+    },
+    "Toggle Lights" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternar Luces"
           }
         }
       }

@@ -2,11 +2,9 @@ import SwiftUI
 
 struct GeneralView: View {
     @AppStorage("automaticUpdateChecks") private var automaticUpdateChecks = false
-    @AppStorage("lightMode") private var lightMode: String = LightMode.classic.rawValue
     @AppStorage("updateCheckFrequency") private var updateCheckFrequency: Double = 604800.0 // Default to weekly
     
     @ObservedObject var updateManager: UpdateManager
-    @ObservedObject var lightsController: LightsController
     
     @Environment(\.colorScheme) private var colorScheme
         
@@ -24,13 +22,8 @@ struct GeneralView: View {
                 checkForUpdatesButton
                 updateStatusView
             }
-            
-            lightModeSelection
         }
         .formStyle(.grouped)
-        .onChange(of: lightMode) {
-            lightsController.syncLightMode()
-        }
         .animation(.easeInOut(duration: 0.2), value: automaticUpdateChecks)
     }
     
@@ -122,17 +115,6 @@ struct GeneralView: View {
             
         default:
             EmptyView()
-        }
-    }
-    
-    private var lightModeSelection: some View {
-        Section {
-            Picker("Light Mode", selection: $lightMode) {
-                ForEach(LightMode.allCases, id: \.self) { mode in
-                    Text(mode.rawValue.capitalized).tag(mode.rawValue)
-                }
-            }
-            .pickerStyle(.segmented)
         }
     }
 }

@@ -19,6 +19,8 @@ final class BulbAnimationManager: ObservableObject {
     private let timerFrequency: TimeInterval = 0.25
     
     deinit {
+        print("BulbAnimationManager deinit called")
+        
         isActive = false
         animationTask?.cancel()
         
@@ -31,13 +33,16 @@ final class BulbAnimationManager: ObservableObject {
     func setupBulbs(count: Int) {
         stopAnimations()
         isInInitialRedState = true
-        
+
         let currentTime = Date().timeIntervalSince1970
         lastGlowUpdateTimes = Array(repeating: currentTime, count: count)
         lastColorUpdateTimes = Array(repeating: currentTime, count: count)
-        
+
         scheduledTasks.removeAll()
-        
+
+        let solidColorString = UserDefaults.standard.string(forKey: "solidColorChoice") ?? "default"
+        let solidColor: BulbColor? = BulbColor(rawValue: solidColorString)
+
         bulbStates = (0..<count).map { index in
             let isUpsideDown = Bool.random()
             let rotation = isUpsideDown
@@ -45,9 +50,9 @@ final class BulbAnimationManager: ObservableObject {
             : CGFloat.random(in: -10...10)
             
             let phaseOffset = Double(index) * 0.4 + Double.random(in: 0...0.5)
-            
+
             return BulbState(
-                color: .red,
+                color: solidColor ?? .red,
                 isGlowing: true,
                 rotation: rotation,
                 isUpsideDown: isUpsideDown,
@@ -59,28 +64,39 @@ final class BulbAnimationManager: ObservableObject {
     func startAnimations() {
         guard !isActive else { return }
         isActive = true
-        
+
+        let solidColorString = UserDefaults.standard.string(forKey: "solidColorChoice") ?? "default"
+        let isSolidMode = BulbColor(rawValue: solidColorString) != nil
+
+        // Skip initial red state if in solid color mode
+        if isSolidMode {
+            isInInitialRedState = false
+            startAnimationLoop()
+            return
+        }
+
+        // Classic rainbow init for default mode
         if isInInitialRedState {
             for task in scheduledTasks {
                 task.cancel()
             }
             scheduledTasks.removeAll()
-            
+
             let task = Task { [weak self] in
                 try? await Task.sleep(for: .seconds(3.0))
-                
+
                 guard let self = self, self.isActive, !Task.isCancelled else { return }
-                
+
                 await MainActor.run {
                     self.isInInitialRedState = false
-                    
+
                     for (index, _) in self.bulbStates.enumerated() {
                         let staggerDelay = Double(index) * 0.1
                         self.startRandomizingBulb(at: index, withDelay: staggerDelay)
                     }
                 }
             }
-            
+
             scheduledTasks.append(task)
         } else {
             startAnimationLoop()
@@ -182,12 +198,18 @@ final class BulbAnimationManager: ObservableObject {
     
     private func updateColorState(at index: Int) {
         guard index < bulbStates.count, isActive else { return }
-        
+
+        let solidColorString = UserDefaults.standard.string(forKey: "solidColorChoice") ?? "default"
+        if BulbColor(rawValue: solidColorString) != nil {
+            // Don't update color in solid mode
+            return
+        }
+
         let currentColor = bulbStates[index].color
         let availableColors = BulbColor.allCases.filter { $0 != currentColor }
-        
-        let newColor = availableColors.randomElement() ?? availableColors[0]
-        
+
+        let newColor = availableColors.randomElement() ?? .red
+
         withAnimation(.easeInOut(duration: 1.2)) {
             bulbStates[index].color = newColor
         }

@@ -2,13 +2,15 @@ import SwiftUI
 
 // MARK: - Preferences Tabs
 enum PrefTab: String, CaseIterable {
-    case general     = "General"
-    case about       = "About"
+    case general = "General"
+    case lights = "Manage Lights"
+    case about = "About"
     
     var systemImage: String {
         switch self {
-        case .general:     return "gear"
-        case .about:       return "info"
+        case .general: return "gear"
+        case .lights: return "lightbulb"
+        case .about: return "info"
         }
     }
 }
@@ -35,10 +37,9 @@ struct PreferencesView: View {
         Group {
             switch selectedTab {
             case .general:
-                GeneralView(
-                    updateManager: updateManager,
-                    lightsController: lightsController
-                )
+                GeneralView(updateManager: updateManager)
+            case .lights:
+                ManageLightsView(lightsController: lightsController)
             case .about:
                 AboutView()
             }
