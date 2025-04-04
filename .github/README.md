@@ -18,6 +18,7 @@ Fairy Lights is a simple, decorative app for macOS built in Swift that float ben
 - Subtle, twinkling fairy lights
 - Lives in the macOS menu bar
 - Select different light modes: classic, pulse, or breathe
+- Select bulb color: default (all available colors) or solid color
 - Bulb colors: red, orange, yellow, green, blue, purple, and white
 
 ## Install
