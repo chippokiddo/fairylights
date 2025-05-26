@@ -84,6 +84,16 @@
     "Fairy Lights" : {
       "shouldTranslate" : false
     },
+    "Last Checked: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última Comprobación: %@"
+          }
+        }
+      }
+    },
     "Light Mode" : {
       "localizations" : {
         "es" : {
@@ -160,6 +170,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Encender"
+          }
+        }
+      }
+    },
+    "Update Available (%@)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualización Disponible (%@)"
           }
         }
       }

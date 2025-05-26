@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 @main
 struct FairyLightsApp: App {
@@ -6,8 +7,20 @@ struct FairyLightsApp: App {
     @StateObject private var lightsController = LightsController()
     
     @Environment(\.openWindow) private var openWindow
-
+    
     @State private var preferencesWindowIsOpen = false
+        
+    private let notificationDelegate: NotificationDelegate
+    
+    init() {
+        // Create the update manager first
+        let updateManager = UpdateManager()
+        _updateManager = StateObject(wrappedValue: updateManager)
+        
+        // Set up notification delegate
+        notificationDelegate = NotificationDelegate(updateManager: updateManager)
+        UNUserNotificationCenter.current().delegate = notificationDelegate
+    }
     
     var body: some Scene {
         MenuBarExtra {
@@ -16,12 +29,14 @@ struct FairyLightsApp: App {
                 
                 Divider()
                 
+                updateMenuSection
+                
                 if let currentVersion = AppVersion.current?.version {
                     Text("Version: \(currentVersion)")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                                
+                
                 Button("Preferences...") {
                     openWindow(id: "preferencesWindow")
                 }
@@ -40,6 +55,19 @@ struct FairyLightsApp: App {
         }
         
         preferencesWindow
+    }
+    
+    // MARK: - Update Menu Section
+    @ViewBuilder
+    private var updateMenuSection: some View {
+        if case .available(let version, _) = updateManager.status {
+            Button("Update Available (\(version))") {
+                updateManager.downloadUpdate()
+            }
+            .foregroundColor(.blue)
+            
+            Divider()
+        }
     }
     
     // MARK: - Toggle Lights

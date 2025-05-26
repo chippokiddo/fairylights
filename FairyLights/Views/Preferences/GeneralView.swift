@@ -7,7 +7,7 @@ struct GeneralView: View {
     @ObservedObject var updateManager: UpdateManager
     
     @Environment(\.colorScheme) private var colorScheme
-        
+    
     var body: some View {
         Form {
             Section {
@@ -15,6 +15,7 @@ struct GeneralView: View {
                 
                 if automaticUpdateChecks {
                     frequencyPicker
+                    lastCheckInfo
                 }
             }
             
@@ -49,6 +50,33 @@ struct GeneralView: View {
         .padding(.vertical, 6)
         .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
         .transition(.move(edge: .top).combined(with: .opacity))
+    }
+    
+    private var lastCheckInfo: some View {
+        HStack {
+            Label {
+                Text("Last Checked: \(lastCheckText)")
+                    .font(.caption)
+            } icon: {
+                Image(systemName: "clock")
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .transition(.opacity)
+    }
+    
+    private var lastCheckText: String {
+        let lastCheck = UserDefaults.standard.double(forKey: "lastUpdateCheck")
+        
+        if lastCheck == 0 {
+            return "Never"
+        }
+        
+        let lastCheckDate = Date(timeIntervalSince1970: lastCheck)
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .abbreviated
+        
+        return formatter.localizedString(for: lastCheckDate, relativeTo: Date())
     }
     
     private var checkForUpdatesButton: some View {
